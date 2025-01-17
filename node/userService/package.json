@@ -1,24 +1,24 @@
 {
-  "name": "authservice",
+  "name": "userservice",
   "version": "1.0.0",
-  "description": "auth-service",
+  "description": "User MicroService for grocery store",
   "main": "index.js",
   "scripts": {
-    "start-auth-service": "node index.js",
-    "dev-auth-service": "nodemon index.js"
+    "start-user-service": "node index.js",
+    "dev-user-service": "nodemon index.js"
   },
   "author": "Manu Janardhana",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.2",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "fs": "*",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.7",
-    "mongoose": "^8.9.2"
+    "jwks-rsa": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
