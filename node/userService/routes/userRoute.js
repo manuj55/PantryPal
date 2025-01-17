@@ -33,4 +33,31 @@ router.post("/", async (req, res) => {
 })
 
 
+//get user 
+router.get("/", async (req, res) => {
+    try {
+        const user = await User.find();
+        res.status(200).json(user);
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: error.message
+        })
+    }
+})
+
+
+//get user by id
+router.get("/:id", async (req, res) => {
+    try {
+        const userByID = await User.findById(req.params.id);
+        res.status(200).json(userByID);
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: error.message
+        })
+    }
+})
+
 module.exports = router;
