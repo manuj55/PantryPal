@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmptyInputException(EmptyInputException e) {
         return new  ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
+ 
 
 
 }
