@@ -104,9 +104,10 @@ router.get("/", async (req, res) => {
  * @openapi
  * '/api/users/{id}':
  *   get:
+ *     summary: Retrieve a user by ID
+ *     description: Fetch a user from the database using its unique ID
  *     tags:
  *       - User Controller
- *     summary: Get user by ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -116,22 +117,23 @@ router.get("/", async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Success
+ *         description: User retrieved
+ *       404:
+ *         description: User not found
  *       500:
  *         description: Internal Server Error
  */
-
 //get user by id
 router.get("/:id", async (req, res) => {
     try {
         const userByID = await User.findById(req.params.id);
+        if (!userByID) {
+            return res.status(404).json({ msg: "User not found" });
+        }
         res.status(200).json(userByID);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
-    catch (error) {
-        return res.status(500).json({
-            error: error.message
-        })
-    }
-})
+});
 
 module.exports = router;
