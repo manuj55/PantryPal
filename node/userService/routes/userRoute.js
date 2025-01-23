@@ -73,19 +73,24 @@ router.post("/", async (req, res) => {
 
 
 /**
- * GET User
- * @openapi
- * '/api/users':
- *   get:
- *     tags:
- *       - User Controller
- *     summary: Get all users
- *     responses:
- *       200:
- *         description: Success
- *       500:
- *         description: Internal Server Error
- */
+    * GET User
+    * @openapi
+    * '/api/users':
+    *   get:
+    *     summary: Retrieves a list of users.
+    *     description: Returns all the user records from the database.
+    *     tags:
+    *       - Users
+    *     responses:
+    *       200:
+    *         description: A list of user objects.
+    *         content:
+    *           application/json:
+    *             schema:
+    *               type: array
+    *               items:
+    *                 $ref: '#/components/schemas/User'
+    */
 //get user 
 router.get("/", async (req, res) => {
     try {
@@ -104,9 +109,10 @@ router.get("/", async (req, res) => {
  * @openapi
  * '/api/users/{id}':
  *   get:
+ *     summary: Retrieve a user by ID
+ *     description: Fetch a user from the database using its unique ID
  *     tags:
  *       - User Controller
- *     summary: Get user by ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -116,22 +122,23 @@ router.get("/", async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Success
+ *         description: User retrieved
+ *       404:
+ *         description: User not found
  *       500:
  *         description: Internal Server Error
  */
-
 //get user by id
 router.get("/:id", async (req, res) => {
     try {
         const userByID = await User.findById(req.params.id);
+        if (!userByID) {
+            return res.status(404).json({ msg: "User not found" });
+        }
         res.status(200).json(userByID);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
-    catch (error) {
-        return res.status(500).json({
-            error: error.message
-        })
-    }
-})
+});
 
 module.exports = router;
