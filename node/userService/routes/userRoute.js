@@ -73,24 +73,19 @@ router.post("/", async (req, res) => {
 
 
 /**
-    * GET User
-    * @openapi
-    * '/api/users':
-    *   get:
-    *     summary: Retrieves a list of users.
-    *     description: Returns all the user records from the database.
-    *     tags:
-    *       - Users
-    *     responses:
-    *       200:
-    *         description: A list of user objects.
-    *         content:
-    *           application/json:
-    *             schema:
-    *               type: array
-    *               items:
-    *                 $ref: '#/components/schemas/User'
-    */
+ * GET User
+ * @openapi
+ * '/api/users':
+ *   get:
+ *     tags:
+ *       - User Controller
+ *     summary: Get all users
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Internal Server Error
+ */
 //get user 
 router.get("/", async (req, res) => {
     try {
