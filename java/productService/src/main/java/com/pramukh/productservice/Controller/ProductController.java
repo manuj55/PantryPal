@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-
 @RestController
+@CrossOrigin
 @RequestMapping("/api")
 @Tag(name = "Product API's")
 public class ProductController {
