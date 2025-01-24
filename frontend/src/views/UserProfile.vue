@@ -62,12 +62,6 @@
               <span v-if="!isEditing">{{ profile.location }}</span>
               <input v-else v-model="profile.location">
             </li>
-            <li>
-              <strong>Social:</strong>
-              <i class="fas fa-facebook"></i>
-              <i class="fas fa-twitter"></i>
-              <i class="fas fa-instagram"></i>
-            </li>
           </ul>
         </div>
       </main>
