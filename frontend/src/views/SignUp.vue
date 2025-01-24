@@ -57,21 +57,21 @@
   </script>
   
   <style scoped>
-.welcome-text{
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  padding: 40px;
-  color: #ffff;
-}
+  .welcome-text{
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 40px;
+    color: #ffff;
+  }
 
-.upper-pannel{
-flex: 1;
-background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(92, 91, 91, 0.5)), url('../assets/pleasantgrocery.jpg');
-height: 500px;
-background-size: cover;
-background-position: center;
-}
+  .upper-pannel{
+    flex: 1;
+    background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(92, 91, 91, 0.5)), url('../assets/pleasantgrocery.jpg');
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+  }
 
   .container {
     font-family: Arial, sans-serif;
@@ -81,34 +81,30 @@ background-position: center;
     width: 500px;
     position:relative;
     left:20px;
-     bottom:300px; 
-     border-radius: 40px;
-   
-    
-    
-
+    bottom:300px; 
+    border-radius: 40px;
   }
-  
+
   .header {
     margin-bottom: 30px;
   }
-  
+
   .title {
     font-size: 2.5rem;
     font-weight: bold;
     margin: 0;
   }
-  
+
   .subtitle {
     color: #666;
     margin: 10px 0 20px;
   }
-  
+
   .form-container {
     display: flex;
     justify-content: center;
   }
-  
+
   .form-wrapper {
     background: white;
     border-radius: 8px;
@@ -117,14 +113,14 @@ background-position: center;
     max-width: 400px;
     width: 100%;
   }
-  
+
   .social-login {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-bottom: 10px;
   }
-  
+
   .social-btn {
     width: 40px;
     height: 40px;
@@ -137,25 +133,25 @@ background-position: center;
     border: none;
     cursor: pointer;
   }
-  
+
   .facebook {
     background-color: #3b5998;
   }
-  
+
   .apple {
     background-color: rgb(201, 20, 201);
   }
-  
+
   .google {
     background-color: #db4437;
   }
-  
+
   .or-divider {
     margin: 20px 0;
     color: #999;
     font-size: 0.9rem;
   }
-  
+
   form input {
     width: 100%;
     margin: 10px 0;
@@ -163,7 +159,7 @@ background-position: center;
     border-radius: 5px;
     border: 1px solid #ccc;
   }
-  
+
   form button {
     width: 100%;
     padding: 10px;
@@ -174,31 +170,62 @@ background-position: center;
     border: none;
     cursor: pointer;
   }
-  
+
   form button:disabled {
     background-color: #999;
     cursor: not-allowed;
   }
-  
+
   .terms {
     font-size: 0.8rem;
     color: #666;
     text-align: left;
   }
-  
+
   .terms a {
     color: #3b5998;
     text-decoration: none;
   }
-  
+
   .login-link {
     margin-top: 10px;
     font-size: 0.9rem;
   }
-  
+
   .login-link a {
     color: #3b5998;
     text-decoration: none;
   }
+
+  /* Media Queries */
+  @media (max-width: 1200px) {
+    .container {
+      width: 450px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .container {
+      width: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      width: 350px;
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      width: 100%;
+      padding: 10px;
+      left: 0;
+      bottom: 0;
+      border-radius: 0;
+    }
+  }
   </style>
+
   
