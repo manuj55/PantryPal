@@ -14,6 +14,12 @@
             <span v-if="!isCollapsed">Dashboard</span>
           </router-link>
         </li>
+        <li>
+        <router-link to="/cart" class="nav-item" active-class="active">
+          <font-awesome-icon icon="shopping-cart" />
+          <span v-if="!isCollapsed">Cart</span>
+        </router-link>
+      </li>
       </ul>
     </div>
   </template>

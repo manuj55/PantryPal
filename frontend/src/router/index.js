@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DashBoardView from "../views/DashBoard.vue";
+import CartView from "../views/Cart.vue";  
 
 const routes = [
   {
     path: "/",
-    redirect: "/dashboard",  // Redirect root to dashboard
+    redirect: "/dashboard",  
   },
   {
     path: "/dashboard",
@@ -12,10 +13,14 @@ const routes = [
     component: DashBoardView,
   },
   {
+    path: "/cart",
+    name: "cart",
+    component: CartView,
+  },
+  {
     path: "/about",
     name: "about",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: () => import("../views/AboutView.vue"),
   },
 ];
 
