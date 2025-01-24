@@ -1,23 +1,17 @@
 <template>
     <div class="login-page">
       <div class="left-panel">
-        <!-- <img src="../assets/unsplash.jpg" alt="Tourist spot" /> -->
         <h1>GROYO.</h1>
         <p>
           Freshness Delivered, <br />
         Convenience at Your Doorstep!
         </p>
-        <div class="image-container">
-          <!-- <img src="/frontend/src/assets/mPic.png" alt="Tourist spot" /> -->
-        </div>
+       
       </div>
       <div class="right-panel">
         <h2>Welcome Back!</h2>
         <p>Continue with Gmail or enter your details to LogIn.</p>
-        <button class="gmail-login">
-          
-          Login with Gmail
-        </button>
+        <button class="gmail-login"> Login with Gmail</button>
         <form>
           <div class="form-group">
             <label for="username">Username</label>
@@ -111,9 +105,9 @@
     align-items: center;
     gap: 10px;
     padding: 10px 20px;
-    border: 1px solid #7ed6c4;
+    border: 1px solid #5cda63;
     background-color: transparent;
-    color: #7ed6c4;
+    color: #5cda63;
     border-radius: 5px;
     cursor: pointer;
     margin-bottom: 20px;
@@ -168,7 +162,7 @@
   
   .forgot-password {
     font-size: 14px;
-    color: #7ed6c4;
+    color: #5cda63;
     text-decoration: none;
     margin-bottom: 20px;
     display: inline-block;
@@ -177,7 +171,7 @@
   .login-button {
     width: 100%;
     padding: 10px;
-    background-color: #7ed6c4;
+    background-color: #5cda63;
     color: #ffffff;
     border: none;
     border-radius: 5px;
@@ -191,15 +185,10 @@
   }
   
   .signup-link a {
-    color: #7ed6c4;
+    color: #437ce6;
     text-decoration: none;
   }
   
-  .skip-link {
-    font-size: 14px;
-    color: #7ed6c4;
-    text-decoration: none;
-    margin-top: 20px;
-  }
+
   </style>
   

@@ -1,14 +1,15 @@
 <template>
+  <div class="upper-pannel">
+    <p class="welcome-text">Welcome to Groyo, we are happy to have you here. Order grocery online and get it delivered to your doorstep.</p>
+  </div>
     <div class="container">
         <!-- Background Image -->
-        <!-- <div class="background-image">
-          <img src="src/assets/image2.jpg">
-        </div> -->
+        
         
         <!-- Header Section -->
         <div class="header">
-            <h1 class="title">Welcome!</h1>
-            <p class="subtitle">To Groyo, your onestep grocery delivery partner.</p>
+            <!-- <h1 class="title">Welcome!</h1>
+            <p class="subtitle">To Groyo, your onestep grocery delivery partner.</p> -->
         </div>
 
         <!-- Form Section -->
@@ -16,9 +17,10 @@
             <div class="form-wrapper">
                 <h2>Register with</h2>
                 <div class="social-login">
-                    <button class="social-btn facebook">F</button>
-                    <button class="social-btn apple"></button>
-                    <button class="social-btn google">G</button>
+                    <button class="social-btn facebook"><i class="fab fa-facebook"></i></button>
+                    <button class="social-btn apple"><i class="fab fa-instagram"></i></button>
+                    <button class="social-btn google"><i class="fa fa-envelope"></i>
+                    </button>
                 </div>
                 <p class="or-divider">or</p>
                 <form @submit.prevent="handleSubmit">
@@ -55,6 +57,22 @@
   </script>
   
   <style scoped>
+.welcome-text{
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 40px;
+  color: #ffff;
+}
+
+.upper-pannel{
+flex: 1;
+background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(92, 91, 91, 0.5)), url('../assets/pleasantgrocery.jpg');
+height: 500px;
+background-size: cover;
+background-position: center;
+}
+
   .container {
     font-family: Arial, sans-serif;
     text-align: center;
@@ -62,8 +80,9 @@
     padding: 20px;
     width: 500px;
     position:relative;
-    left:400px;
-    top:80px;
+    left:20px;
+     bottom:300px; 
+     border-radius: 40px;
    
     
     
@@ -124,7 +143,7 @@
   }
   
   .apple {
-    background-color: black;
+    background-color: rgb(201, 20, 201);
   }
   
   .google {
