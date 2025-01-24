@@ -7,20 +7,32 @@
               type="text"
               class="form-control search-input"
               placeholder="Search for products..."
+              v-model="searchQuery"
+              @input="filterProducts"
             />
-            <select class="form-select category-filter">
+            <select class="form-select category-filter"  @change="handleCategoryChange">
               <option value="">All Categories</option>
-              <option value="burgers">Burgers</option>
-              <option value="sides">Sides</option>
-              <option value="beverages">Beverages</option>
+              <option value="Fruits">Fruits</option>
+              <option value="Dairy">Dairy</option>
+              <option value="Vegetables">Vegetables</option>
             </select>
           </div>
-  
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <div v-for="(product, index) in products" :key="index" class="col">
-              <ProductCard :product="product" />
+          
+          <div v-if="filteredProducts.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <div v-for="(product, index) in filteredProducts" :key="index" class="col">
+              <ProductCard 
+              :product="product" 
+              :is-in-cart="isInCart(product.id)"
+              @add-to-cart="addToCart"
+              @remove-from-cart="removeFromCart"
+              />
             </div>
           </div>
+
+          <div v-else class="no-results">
+            <p>No results found</p>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -28,61 +40,50 @@
   
   <script>
   import ProductCard from "@/components/ProductCard.vue";
-  
-  export default {
-    name: "DashboardView",
-    components: {
-      ProductCard,
+import { mapActions, mapGetters } from "vuex";
+
+export default {
+  name: "DashboardView",
+  components: {
+    ProductCard,
+  },
+  data() {
+    return {
+      searchQuery: "",
+      selectedCategory: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["getAllProducts","getCartItems"]),
+    filteredProducts() {
+      if (!this.getAllProducts) return [];
+      return this.getAllProducts.filter((product) => {
+        if (!product || !product.title) return false;
+        return product.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+      });
     },
-    data() {
-      return {
-        products: [
-          {
-            image: new URL('@/assets/big-mac.png', import.meta.url).href,
-            name: "Big Mac",
-            description: "A delicious burger with special sauce.",
-            price: 5.99,
-            quantity: 1,
-          },
-          {
-            image: new URL('@/assets/mc-chicken.png', import.meta.url).href,
-            name: "Mc Chicken",
-            description: "Crispy chicken patty with lettuce and mayo.",
-            price: 4.99,
-            quantity: 1,
-          },
-          {
-            image: new URL('@/assets/double-cb.png', import.meta.url).href,
-            name: "Double Cheese Burger",
-            description: "Two beef patties with cheese.",
-            price: 2.99,
-            quantity: 1,
-          },
-          {
-            image: new URL('@/assets/fries.png', import.meta.url).href,
-            name: "Fries",
-            description: "Golden crispy fries.",
-            price: 2.99,
-            quantity: 1,
-          },
-          {
-            image: new URL('@/assets/lipton.png', import.meta.url).href,
-            name: "Ice Tea",
-            description: "Refreshing Lipton Ice Tea.",
-            price: 1.99,
-            quantity: 1,
-          },
-          {
-            image: new URL('@/assets/cola.png', import.meta.url).href,
-            name: "Coke",
-            description: "Refreshing Coca-Cola.",
-            price: 1.49,
-            quantity: 1,
-          },
-        ],
-      };
+  },
+  methods: {
+    ...mapActions(["fetchAllProducts", "fetchProductsByCategory", "addToCart","removeFromCart"]),
+    filterProducts() {
+      this.$store.dispatch("filterProducts", this.searchQuery);
     },
-  };
+    handleCategoryChange(event) {
+    const category = event.target.value;  // Get the selected category correctly
+    if (category) {
+      this.fetchProductsByCategory(category);
+    } else {
+      this.fetchAllProducts();
+    }
+  },
+  isInCart(productId) {
+      return this.getCartItems.some((item) => item.id === productId);
+    },
+  },
+  created() {
+    this.fetchAllProducts();
+  },
+};
   </script>
   
   <style scoped>

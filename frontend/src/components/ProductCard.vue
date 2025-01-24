@@ -5,7 +5,7 @@
           <img
             :src="product.image"
             alt="Product Image"
-            class="img-fluid rounded-circle"
+            class=" product-image"
           />
         </div>
         <h5 class="font-weight-bold mb-2 text-truncate">
@@ -18,9 +18,19 @@
           ${{ product.price.toFixed(2) }}
         </h6>
         <div>
-          <button class="btn btn-success w-100">
-            Add to Cart
-          </button>
+          <button 
+          class="btn btn-success w-100" 
+          v-if="!isInCart" 
+          @click="$emit('add-to-cart', product)">
+          Add to Cart
+        </button>
+
+        <button
+          v-else
+          class="btn btn-danger w-100"
+          @click="$emit('remove-from-cart', product.id)">
+          Remove from Cart
+        </button>
         </div>
       </div>
     </div>
@@ -34,11 +44,24 @@
         type: Object,
         required: true,
       },
+      isInCart: {
+      type: Boolean,
+      required: true,
+    },
     },
   };
   </script>
   
   <style scoped>
+
+  .product-image {
+  width: 100%;
+  height: 220px; 
+  max-width: 200px;
+  object-fit: contain; 
+  display: block;
+  margin: 0 auto;
+  } 
 
   .card {
     border-radius: 1rem;
@@ -49,16 +72,6 @@
   .card:hover {
     transform: scale(1.05);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  }
-  
-
-  .photo img {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    border-radius: 50%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
   }
   
   .photo img:hover {
