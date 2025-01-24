@@ -17,8 +17,8 @@
               <option value="Vegetables">Vegetables</option>
             </select>
           </div>
-  
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+          
+          <div v-if="filteredProducts.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             <div v-for="(product, index) in filteredProducts" :key="index" class="col">
               <ProductCard 
               :product="product" 
@@ -28,6 +28,11 @@
               />
             </div>
           </div>
+
+          <div v-else class="no-results">
+            <p>No results found</p>
+          </div>
+          
         </div>
       </div>
     </div>

@@ -3,12 +3,17 @@
       <div class="py-4 container-fluid">
         <div class="row justify-content-center">
           <div class="col-12">
+            <div v-if="cartItems.length > 0">
             <Tables 
               :products="cartItems" 
               @increase-quantity="increaseQuantity" 
               @decrease-quantity="decreaseQuantity"  
               @remove-item="removeProduct"  
             />
+          </div>
+          <div v-else class="no-items">
+            <p>No Items have been Added</p>
+          </div>
           </div>
         </div>
       </div>
@@ -70,6 +75,15 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  .no-items {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #888;
+  font-weight: bold;
+  padding: 50px 0;
+}
+
   
   @media (max-width: 992px) {
     .container-fluid {
