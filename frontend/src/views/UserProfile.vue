@@ -1,72 +1,73 @@
+
 <template>
-    <div class="container">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="logo">
-          <img src="@/assets/logo.png" alt="FreshBasket">
-          <span>Groyo</span>
-        </div>
-        <nav>
-          <ul>
-            <li 
-              v-for="(item, index) in menuItems" 
-              :key="index" 
-              :class="{ active: activeItem === index }" 
-              @click="setActive(index)"
-            >
-              <i :class="item.icon"></i> {{ item.name }}
-            </li>
-          </ul>
-        </nav>
-      </aside>
-  
-      <!-- Main Content -->
-      <main class="content">
-        <div class="header">
-          <img src="" class="header-image" alt="Header">
-          <h1>{{ menuItems[activeItem].name }}</h1>
-        </div>
-  
-        <div class="profile-card">
-          <div class="profile-info">
-            <img src="@/assets/logo.png" class="profile-pic" alt="User">
-            <div>
-              <h2>Peter</h2>
-              <p>End User</p>
-            </div>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="@/assets/logo.png" alt="FreshBasket">
+        <span>Groyo</span>
+      </div>
+      <nav>
+        <ul>
+          <li 
+            v-for="(item, index) in menuItems" 
+            :key="index" 
+            :class="{ active: activeItem === index }" 
+            @click="setActive(index)"
+          >
+            <i :class="item.icon"></i> {{ item.name }}
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+      <div class="header">
+        <img src="../assets/pexels-mixu-513809-1323206.jpg" class="header-image" alt="Header" z-index="-1">
+        <h1>{{ menuItems[activeItem].name }}</h1>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-info">
+          <img src="../assets/gmail.png" class="profile-pic" alt="User" z-index="2">
+          <div>
+            <h2>Peter</h2>
           </div>
         </div>
-  
-        <div class="details-card">
-          <h3>Profile Information</h3>
-          <button @click="toggleEditMode" class="edit-btn">
-            {{ isEditing ? 'Save' : 'Edit' }}
-          </button>
-          <p v-if="!isEditing">{{ profileInfo }}</p>
-          <textarea v-else v-model="profileInfo"></textarea>
-          
-          <ul>
-            <li><strong>Full Name:</strong> 
-              <span v-if="!isEditing">{{ profile.fullName }}</span>
-              <input v-else v-model="profile.fullName">
-            </li>
-            <li><strong>Mobile:</strong> 
-              <span v-if="!isEditing">{{ profile.mobile }}</span>
-              <input v-else v-model="profile.mobile">
-            </li>
-            <li><strong>Email:</strong> 
-              <span v-if="!isEditing">{{ profile.email }}</span>
-              <input v-else v-model="profile.email">
-            </li>
-            <li><strong>Location:</strong> 
-              <span v-if="!isEditing">{{ profile.location }}</span>
-              <input v-else v-model="profile.location">
-            </li>
-          </ul>
-        </div>
-      </main>
-    </div>
-  </template>
+      </div>
+
+      <div class="details-card">
+        <h3>Profile Information</h3>
+        <button @click="toggleEditMode" class="edit-btn">
+          {{ isEditing ? 'Save' : 'Edit' }}
+        </button>
+        <p v-if="!isEditing">{{ profileInfo }}</p>
+        <textarea v-else v-model="profileInfo"></textarea>
+        
+        <ul>
+          <li><strong>Full Name:</strong> 
+            <span v-if="!isEditing">{{ profile.fullName }}</span>
+            <input v-else v-model="profile.fullName">
+          </li>
+          <li><strong>Mobile:</strong> 
+            <span v-if="!isEditing">{{ profile.mobile }}</span>
+            <input v-else v-model="profile.mobile">
+          </li>
+          <li><strong>Email:</strong> 
+            <span v-if="!isEditing">{{ profile.email }}</span>
+            <input v-else v-model="profile.email">
+          </li>
+          <li><strong>Location:</strong> 
+            <span v-if="!isEditing">{{ profile.location }}</span>
+            <input v-else v-model="profile.location">
+          </li>
+        </ul>
+      </div>
+    </main>
+  </div>
+</template>
+
   
   <script>
   export default {
@@ -103,7 +104,7 @@
   };
   </script>
   
-  <style scoped>
+ <style scoped>
   /* Layout styles */
   .container {
     display: flex;
@@ -173,7 +174,7 @@
   
   .header-image {
     width: 100%;
-    height: 200px;
+    height: 400px;
     object-fit: cover;
     border-radius: 10px;
   }
@@ -190,12 +191,18 @@
   /* Profile Card */
   .profile-card {
     display: flex;
+    width: 945px;
+    height:130px;
     align-items: center;
     background: white;
-    padding: 20px;
-    margin-top: -50px;
+    padding: 30px;
+    margin-top: -60px; /* Adjusted to display above the header image */
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    left:30px;
+    z-index: 1;
+
   }
   
   .profile-pic {
@@ -213,6 +220,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
+    text-align: left;
   }
   
   .details-card h3 {
@@ -261,4 +269,4 @@
     font-size: 18px;
   }
   </style>
-  
+   
