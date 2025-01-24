@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DashBoardView from "../views/DashBoard.vue";
 import CartView from "../views/Cart.vue";  
-
+import BillingView from "../views/BillingView.vue";  
 const routes = [
   {
     path: "/",
-    redirect: "/dashboard",  
+    redirect: "/dashboard",  // Redirect root to dashboard
   },
   {
     path: "/dashboard",
@@ -16,6 +16,11 @@ const routes = [
     path: "/cart",
     name: "cart",
     component: CartView,
+  },
+  {
+    path: "/billing",
+    name: "billing",
+    component: BillingView,
   },
   {
     path: "/about",
