@@ -2,8 +2,8 @@
 <template>
   <div class="container">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="logo">
+    <!-- <aside class="sidebar"> -->
+      <!-- <div class="logo">
         <img src="@/assets/logo.png" alt="FreshBasket">
         <span>Groyo</span>
       </div>
@@ -18,21 +18,21 @@
             <i :class="item.icon"></i> {{ item.name }}
           </li>
         </ul>
-      </nav>
-    </aside>
+      </nav> -->
+    <!-- </aside> -->
 
     <!-- Main Content -->
     <main class="content">
       <div class="header">
-        <img src="../assets/pexels-mixu-513809-1323206.jpg" class="header-image" alt="Header" z-index="-1">
+        <img src="../assets/pexels-mixu-513809-1323206.jpg" class="header-image" alt="Header">
         <h1>{{ menuItems[activeItem].name }}</h1>
       </div>
 
       <div class="profile-card">
         <div class="profile-info">
-          <img src="../assets/gmail.png" class="profile-pic" alt="User" z-index="2">
+          <img src="../assets/gmail.png" class="profile-pic" alt="User">
           <div>
-            <h2>Peter</h2>
+            <h2>Peter Dilinger</h2>
           </div>
         </div>
       </div>
@@ -58,6 +58,10 @@
             <span v-if="!isEditing">{{ profile.email }}</span>
             <input v-else v-model="profile.email">
           </li>
+          <li><strong>Address:</strong> 
+            <span v-if="!isEditing">{{ profile.address }}</span>
+            <input v-else v-model="profile.address">
+          </li>
           <li><strong>Location:</strong> 
             <span v-if="!isEditing">{{ profile.location }}</span>
             <input v-else v-model="profile.location">
@@ -76,11 +80,12 @@
       return {
         activeItem: 0,  // Default active menu item (Profile)
         isEditing: false, // Track edit mode
-        profileInfo: "Hi, I’m Peter. Decisions: If you can’t decide, the answer is no...",
+        profileInfo: "Peter Dilinger...",
         profile: {
           fullName: "Peter Dillinger",
           mobile: "(44) 123 1234 123",
           email: "Peter-Dillinger@mail.com",
+          address: "Ludwig Guttman Strasse 9,Wieblingen- Heidelberg, 69123",
           location: "Germany"
         },
         menuItems: [
@@ -111,54 +116,7 @@
     height: 100vh;
   }
   
-  /* Sidebar */
-  .sidebar {
-    width: 250px;
-    background: #f4f4f4;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sidebar .logo {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .sidebar .logo img {
-    width: 30px;
-    margin-right: 10px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    padding: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background 0.3s ease;
-  }
-  
-  .sidebar li:hover {
-    background: #e2e8f0;
-    border-radius: 5px;
-  }
-  
-  .sidebar li.active {
-    background: #34d399;  /* Tailwind green-400 */
-    color: white;
-    border-radius: 5px;
-  }
-  
-  .sidebar i {
-    margin-right: 10px;
-  }
-  
+
   /* Main Content */
   .content {
     flex: 1;
@@ -192,7 +150,7 @@
   .profile-card {
     display: flex;
     width: 945px;
-    height:130px;
+    height:200px;
     align-items: center;
     background: white;
     padding: 30px;
@@ -268,5 +226,59 @@
     margin-right: 10px;
     font-size: 18px;
   }
-  </style>
-   
+
+   /* Media Queries */
+    @media (max-width: 1200px) {
+      .profile-card {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .profile-pic {
+        margin-bottom: 10px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .header h1 {
+        font-size: 24px;
+      }
+
+      .details-card {
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .content {
+        padding: 15px;
+      }
+
+      .profile-card {
+        margin-top: 20px;
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .edit-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .details-card input, 
+      .details-card textarea {
+        font-size: 14px;
+      }
+    }
+     </style>

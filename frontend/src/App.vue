@@ -1,11 +1,11 @@
 <template>
-  <nav>
+  <!-- <nav>
     <router-link to="/signin">SignIn</router-link> |
     <router-link to="/signup">SignUp</router-link> |
     <router-link to="/">Home</router-link> |
     <router-link to="/UserProfile">UserProfile</router-link> |
     <router-link to="/about">About</router-link>
-  </nav>
+  </nav> -->
   <router-view />
 </template>
 
