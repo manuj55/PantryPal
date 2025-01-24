@@ -20,6 +20,12 @@
           <span v-if="!isCollapsed">Cart</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/billing" class="nav-item" active-class="active">
+          <font-awesome-icon icon="shopping-cart" />
+          <span v-if="!isCollapsed">Billing</span>
+        </router-link>
+      </li>
       </ul>
     </div>
   </template>
