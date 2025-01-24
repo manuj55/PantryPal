@@ -32,8 +32,7 @@
           <a href="#" class="forgot-password">Forget password?</a>
           <button type="submit" class="login-button">Login</button>
         </form>
-        <p class="signup-link">
-          Doesn't have an account? <a href="#">Sign Up</a>
+        <p class="signup-link"> Dont have an account? <a href="/signup">Sign Up</a>
         </p>
       </div>
     </div>
