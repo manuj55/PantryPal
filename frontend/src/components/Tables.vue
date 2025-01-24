@@ -29,13 +29,13 @@
                 </td>
                 <td>
                   <div class="d-flex align-items-center justify-content-center">
-                    <button class="quantity-btn">-</button>
+                    <button class="quantity-btn" @click="$emit('decrease-quantity', index)">-</button>
                     <p class="text-xs font-weight-bold mb-0 text-center mx-2">{{ product.quantity }}</p>
-                    <button class="quantity-btn">+</button>
+                    <button class="quantity-btn" @click="$emit('increase-quantity', index)">+</button>
                   </div>
                 </td>
                 <td class="align-middle text-center">
-                  <button class="remove-btn">
+                  <button class="remove-btn" @click="$emit('remove-item', index)">
                     <font-awesome-icon icon="trash-alt" />
                   </button>
                 </td>
@@ -44,7 +44,7 @@
             <tfoot>
               <tr class="total-row">
                 <td colspan="2" class="text-end total-label">Total:</td>
-                <td class="text-center total-amount">$99.99</td>
+                <td class="text-center total-amount">${{ calculateTotal.toFixed(2) }}</td>
                 <td></td>
               </tr>
             </tfoot>
@@ -63,8 +63,16 @@ export default {
       required: true,
     },
   },
+  computed: {
+    calculateTotal() {
+      return this.products.reduce((total, product) => {
+        return total + product.price * product.quantity;
+      }, 0);
+    },
+  },
 };
 </script>
+
 
 <style scoped>
 .card {

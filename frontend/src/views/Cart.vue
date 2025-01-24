@@ -3,7 +3,12 @@
       <div class="py-4 container-fluid">
         <div class="row justify-content-center">
           <div class="col-12">
-            <Tables :products="products" @remove-item="removeProduct" />
+            <Tables 
+              :products="cartItems" 
+              @increase-quantity="increaseQuantity" 
+              @decrease-quantity="decreaseQuantity"  
+              @remove-item="removeProduct"  
+            />
           </div>
         </div>
       </div>
@@ -12,33 +17,44 @@
   
   <script>
   import Tables from "@/components/Tables.vue";
-  
+  import { mapGetters, mapActions } from "vuex";
+
   export default {
     name: "CartView",
     components: {
       Tables,
     },
-    data() {
-      return {
-        products: [
-          { photo: require('@/assets/big-mac.png'), name: "Big Mac", price: 5.99, quantity: 1 },
-          { photo: require('@/assets/mc-chicken.png'), name: "Mc Chicken", price: 4.99, quantity: 1 },
-          { photo: require('@/assets/double-cb.png'), name: "Double Cheese Burger", price: 2.99, quantity: 1 },
-          { photo: require('@/assets/fries.png'), name: "Fries", price: 2.99, quantity: 1 },
-          { photo: require('@/assets/nuggets.png'), name: "Mc Nuggets", price: 3.49, quantity: 1 },
-          { photo: require('@/assets/salad.png'), name: "Salad", price: 2.79, quantity: 1 },
-          { photo: require('@/assets/cola.png'), name: "Coke", price: 1.99, quantity: 1 },
-          { photo: require('@/assets/lipton.png'), name: "Ice Tea", price: 1.99, quantity: 1 },
-          { photo: require('@/assets/water.png'), name: "Water", price: 1.49, quantity: 1 },
-        ],
-      };
+  computed: {
+    ...mapGetters(["getCartItems",]),
+    cartItems() {
+      return this.getCartItems.map((item) => ({
+        id: item.id,
+        photo: item.image,
+        name: item.title,
+        price: item.price,
+        quantity: item.cartQuantity,
+      }));
     },
-    methods: {
-      removeProduct(index) {
-        this.products.splice(index, 1);
-      },
+  },
+  methods: {
+    ...mapActions(["removeFromCart","updateCartQuantity"]),
+    removeProduct(index) {
+      const product = this.cartItems[index];
+      this.removeFromCart(product.id);
     },
-  };
+    increaseQuantity(index) {
+      const product = this.cartItems[index];
+      this.updateCartQuantity({ id: product.id, quantity: product.quantity + 1 });
+    },
+    decreaseQuantity(index) {
+      const product = this.cartItems[index];
+      if (product.quantity > 1) {
+        this.updateCartQuantity({ id: product.id, quantity: product.quantity - 1 });
+      }
+    },
+    
+  },
+};
   </script>
   
   <style scoped>
