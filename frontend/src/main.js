@@ -4,6 +4,13 @@ import router from "./router";
 import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faTachometerAlt, faShoppingCart, faFileInvoice, faUser, faSignInAlt, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-createApp(App).use(store).use(router).mount("#app");
-/* eslint-disable prettier/prettier */
+
+library.add(faTachometerAlt, faShoppingCart, faFileInvoice, faUser, faSignInAlt, faUserPlus);
+const app = createApp(App);
+app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(store).use(router);
+app.mount("#app");
