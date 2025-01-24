@@ -1,6 +1,7 @@
 <template>
     <div class="login-page">
       <div class="left-panel">
+        <!-- <img src="../assets/unsplash.jpg" alt="Tourist spot" /> -->
         <h1>GROYO.</h1>
         <p>
           Freshness Delivered, <br />
@@ -49,13 +50,16 @@
   /* Left Panel */
   .left-panel {
     flex: 1;
-    background-color: #7ed6c4;
+    background-image: url('../assets/unsplash.jpg');
+    background-size: cover;
+    background-position: left;
     color: #ffffff;
     padding: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+
   }
   
   .left-panel h1 {
