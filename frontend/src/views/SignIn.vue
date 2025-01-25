@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="left-panel">
-      <h1>GROYO.</h1>
+      <h1>Fresh Basket.</h1>
       <p>
         Freshness Delivered, <br />
         Convenience at Your Doorstep!
@@ -10,7 +10,7 @@
     <div class="right-panel">
       <form @submit.prevent="validateForm">
         <h2>Welcome Back!</h2>
-        <p>Continue with Gmail or enter your details to LogIn.</p>
+    
         
         <div class="form-group">
           <label for="username">Username</label>

@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="left-panel">
-      <h1>GROYO.</h1>
+      <h1>FRESH BASKET.</h1>
       <p>
         Freshness Delivered, <br />
         Convenience at Your Doorstep!
@@ -9,7 +9,8 @@
     </div>
     <div class="right-panel">
       <form @submit.prevent="validateForm">
-        <h2>Welcome To Groyo</h2>
+        <h2>Welcome To Fresh Basket</h2>
+        <p>Register to get started</p>
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" id="username" v-model="username" placeholder="Enter your name" /> <br />

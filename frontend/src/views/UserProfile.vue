@@ -1,7 +1,6 @@
-
 <template>
   <div class="container">
-    <!-- Sidebar -->
+    <!-- Sidebar created for reference -->
     <!-- <aside class="sidebar"> -->
       <!-- <div class="logo">
         <img src="@/assets/logo.png" alt="FreshBasket">
