@@ -3,20 +3,33 @@ import HomeView from "../views/HomeView.vue";
 import SignIn from "../views/SignIn.vue";
 import UserProfile from "../views/UserProfile.vue";
 
+import DashBoardView from "../views/DashBoard.vue";
+import CartView from "../views/Cart.vue";  
+import BillingView from "../views/BillingView.vue";  
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    redirect: "/dashboard",  // Redirect root to dashboard
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: DashBoardView,
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: CartView,
+  },
+  {
+    path: "/billing",
+    name: "billing",
+    component: BillingView,
   },
   {
     path: "/about",
     name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: () => import("../views/AboutView.vue"),
   },
   {
     path: "/signin",

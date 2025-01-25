@@ -2,10 +2,14 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import SignIn from "./views/SignIn.vue";
-import SignUp from "./views/SignUp.vue";
-import UserProfile from "./views/UserProfile.vue";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faTachometerAlt, faShoppingCart, faFileInvoice, faUser, faSignInAlt, faUserPlus,faTrashAlt,faPlus,faPen} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-createApp(App).use(store).use(router).use(SignIn).use(UserProfile).use(SignUp).mount("#app");
+library.add(faTachometerAlt, faShoppingCart, faFileInvoice, faUser, faSignInAlt, faUserPlus,faTrashAlt,faPlus,faPen);
+const app = createApp(App);
+app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(store).use(router);
+app.mount("#app");
