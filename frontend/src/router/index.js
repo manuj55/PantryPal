@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
+import SignIn from "../views/SignIn.vue";
+import UserProfile from "../views/UserProfile.vue";
+
 import DashBoardView from "../views/DashBoard.vue";
 import CartView from "../views/Cart.vue";  
 import BillingView from "../views/BillingView.vue";  
@@ -27,6 +31,22 @@ const routes = [
     name: "about",
     component: () => import("../views/AboutView.vue"),
   },
+  {
+    path: "/signin",
+    name: "signin",
+    component: SignIn,
+  },
+  {
+    path: "/UserProfile",
+    name: "userProfile",
+    component: UserProfile,
+  },
+  {
+    path: "/signup",
+    name: "signup",
+    component: () =>
+      import(/* webpackChunkName: "signup" */ "../views/SignUp.vue"),
+  }
 ];
 
 const router = createRouter({
