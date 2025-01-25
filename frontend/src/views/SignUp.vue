@@ -1,231 +1,330 @@
 <template>
-  <div class="upper-pannel">
-    <p class="welcome-text">Welcome to Groyo, we are happy to have you here. Order grocery online and get it delivered to your doorstep.</p>
-  </div>
-    <div class="container">
-        <!-- Background Image -->
-        
-        
-        <!-- Header Section -->
-        <div class="header">
-            <!-- <h1 class="title">Welcome!</h1>
-            <p class="subtitle">To Groyo, your onestep grocery delivery partner.</p> -->
-        </div>
-
-        <!-- Form Section -->
-        <div class="form-container">
-            <div class="form-wrapper">
-                <h2>Register with</h2>
-                <div class="social-login">
-                    <button class="social-btn facebook"><i class="fab fa-facebook"></i></button>
-                    <button class="social-btn apple"><i class="fab fa-instagram"></i></button>
-                    <button class="social-btn google"><i class="fa fa-envelope"></i>
-                    </button>
-                </div>
-                <p class="or-divider">or</p>
-                <form @submit.prevent="handleSubmit">
-                    <input type="text" v-model="name" placeholder="Name" required />
-                    <input type="email" v-model="email" placeholder="Email" required />
-                    <input type="password" v-model="password" placeholder="Password" required />
-                    <label class="terms">
-                        <input type="checkbox" v-model="acceptTerms" required /> I agree to the <a href="#">Terms and Conditions</a>
-                    </label>
-                    <button type="submit" :disabled="!acceptTerms">Sign Up</button>
-                </form>
-                <p class="login-link">Already have an account? <a href="/signin">Sign in</a></p>
-            </div>
-        </div>
+  <div class="login-page">
+    <div class="left-panel">
+      <h1>GROYO.</h1>
+      <p>
+        Freshness Delivered, <br />
+        Convenience at Your Doorstep!
+      </p>
     </div>
+    <div class="right-panel">
+      <form @submit.prevent="validateForm">
+        <h2>Welcome To Groyo</h2>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="username" placeholder="Enter your name" /> <br />
+          <span v-if="errors.username" class="error">{{ errors.username }}</span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model="email" placeholder="Enter your email" /><br />
+          <span v-if="errors.email" class="error">{{ errors.email }}</span>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-container">
+            <input type="password" id="password" v-model="password" placeholder="Enter your password" />
+            <button type="button" class="toggle-password"></button>
+          </div>
+          <span v-if="errors.password" class="error">{{ errors.password }}</span>
+        </div>
+        <button type="submit" class="register-button">Register</button>
+        <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p>
+      </form>
+    </div>
+  </div>
 </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        name: "",
-        email: "",
-        password: "",
-        acceptTerms: false,
-      };
+
+<script>
+export default {
+  data() {
+    return {
+      username: '',
+      email: '',
+      password: '',
+      errors: {}
+    };
+  },
+  methods: {
+    validateForm() {
+      this.errors = {};
+
+      if (!this.username) {
+        this.errors.username = 'Username is required.';
+      }
+      if (!this.email) {
+        this.errors.email = 'Email is required.';
+      }
+      if (!this.password) {
+        this.errors.password = 'Password is required.';
+      }
+
+      if (Object.keys(this.errors).length === 0) {
+        // Submit the form
+        this.submitForm();
+      }
     },
-    methods: {
-      handleSubmit() {
-        console.log("Form submitted", { name: this.name, email: this.email, password: this.password });
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .welcome-text{
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 40px;
-    color: #ffff;
+    submitForm() {
+      // Handle form submission
+      alert('Form submitted successfully!');
+    }
+  }
+};
+</script>
+
+<style scoped>
+/* General Styling */
+.login-page {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Left Panel */
+.left-panel {
+  flex: 1;
+  background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(51, 51, 51, 0.116)),url('../assets/unsplash.jpg');
+  background-size: cover;
+  background-position: left;
+  color: #ffffff;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.left-panel h1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.left-panel p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.image-container {
+  width: 100%;
+  text-align: center;
+}
+
+.image-container img {
+  width: 100%;
+  max-width: 400px;
+  object-fit: cover;
+}
+
+/* Right Panel */
+.right-panel {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.right-panel h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.right-panel p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.gmail-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid #29a12f;
+  background-color: transparent;
+  color: #29a12f;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.gmail-login img {
+  width: 20px;
+  height: 20px;
+}
+
+form {
+  width: 80%;
+  height: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(119, 118, 118, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+  /* position: relative;
+  left: 90px; */
+  border-radius: 40px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  width: 93%;
+}
+
+.password-container input {
+  flex: 1;
+  width: 90%;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.forgot-password {
+  font-size: 14px;
+  color: #1717e4;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.register-button {
+  width: 50%;
+  padding: 10px;
+  background-color: #29a12f;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.signup-link {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.signup-link a {
+  color: #1717e4;
+  text-decoration: none;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
   }
 
-  .upper-pannel{
-    flex: 1;
-    background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(92, 91, 91, 0.5)), url('../assets/pleasantgrocery.jpg');
-    height: 500px;
-    background-size: cover;
-    background-position: center;
-  }
-
-  .container {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #ffffff;
-    padding: 20px;
-    width: 500px;
-    position:relative;
-    left:20px;
-    bottom:300px; 
-    border-radius: 40px;
-  }
-
-  .header {
-    margin-bottom: 30px;
-  }
-
-  .title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .subtitle {
-    color: #666;
-    margin: 10px 0 20px;
-  }
-
-  .form-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  .form-wrapper {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+  .left-panel, .right-panel {
+    flex: none;
     width: 100%;
+    padding: 20px;
   }
 
-  .social-login {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .social-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
+  .left-panel {
     align-items: center;
+    text-align: center;
+  }
+
+  .right-panel {
+    align-items: center;
+    text-align: center;
+  }
+
+  .gmail-login {
     justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-    border: none;
-    cursor: pointer;
   }
 
-  .facebook {
-    background-color: #3b5998;
+  .password-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .apple {
-    background-color: rgb(201, 20, 201);
-  }
-
-  .google {
-    background-color: #db4437;
-  }
-
-  .or-divider {
-    margin: 20px 0;
-    color: #999;
-    font-size: 0.9rem;
-  }
-
-  form input {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-
-  form button {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #3b5998;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    cursor: pointer;
-  }
-
-  form button:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-
-  .terms {
-    font-size: 0.8rem;
-    color: #666;
-    text-align: left;
-  }
-
-  .terms a {
-    color: #3b5998;
-    text-decoration: none;
-  }
-
-  .login-link {
+  .toggle-password {
+    margin-left: 0;
     margin-top: 10px;
-    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .left-panel, .right-panel {
+    padding: 10px;
   }
 
-  .login-link a {
-    color: #3b5998;
-    text-decoration: none;
+  .left-panel h1 {
+    font-size: 28px;
   }
 
-  /* Media Queries */
-  @media (max-width: 1200px) {
-    .container {
-      width: 450px;
-    }
+  .left-panel p {
+    font-size: 16px;
   }
 
-  @media (max-width: 992px) {
-    .container {
-      width: 400px;
-    }
+  .right-panel h2 {
+    font-size: 24px;
   }
 
-  @media (max-width: 768px) {
-    .container {
-      width: 350px;
-      padding: 15px;
-    }
+  .right-panel p {
+    font-size: 14px;
   }
 
-  @media (max-width: 480px) {
-    .container {
-      width: 100%;
-      padding: 10px;
-      left: 0;
-      bottom: 0;
-      border-radius: 0;
-    }
+  .gmail-login {
+    padding: 8px 16px;
   }
-  </style>
 
-  
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  input {
+    padding: 8px;
+  }
+
+  .register-button {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .forgot-password {
+    font-size: 12px;
+  }
+
+  .signup-link {
+    font-size: 12px;
+  }
+}
+</style>

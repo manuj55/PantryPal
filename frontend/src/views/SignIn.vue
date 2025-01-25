@@ -1,48 +1,83 @@
 <template>
   <div class="login-page">
     <div class="left-panel">
-    <h1>GROYO.</h1>
-    <p>
-      Freshness Delivered, <br />
-    Convenience at Your Doorstep!
-    </p>
-     
+      <h1>GROYO.</h1>
+      <p>
+        Freshness Delivered, <br />
+        Convenience at Your Doorstep!
+      </p>
     </div>
     <div class="right-panel">
-    <h2>Welcome Back!</h2>
-    <p>Continue with Gmail or enter your details to LogIn.</p>
-    <button class="gmail-login"> Login with Gmail</button>
-    <form>
-      <div class="form-group">
-      <label for="username">Username</label>
-      <input type="email" id="username" placeholder="Enter your gmail" />
-      </div>
-      <div class="form-group">
-      <label for="password">Password</label>
-      <div class="password-container">
-        <input type="password" id="password" placeholder="Enter your password" />
-        <button type="button" class="toggle-password"></button>
-      </div>
-      </div>
-      <a href="#" class="forgot-password">Forget password?</a>
-      <button type="submit" class="login-button">Login</button>
-    </form>
-    <p class="signup-link"> Dont have an account? <a href="/signup">Sign Up</a>
-    </p>
+      <form @submit.prevent="validateForm">
+        <h2>Welcome Back!</h2>
+        <p>Continue with Gmail or enter your details to LogIn.</p>
+        
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="email" id="username" v-model="username" placeholder="Enter your gmail" /> <br />
+          <span v-if="errors.username" class="error">{{ errors.username }}</span>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-container">
+            <input type="password" id="password" v-model="password" placeholder="Enter your password" />
+            <button type="button" class="toggle-password"></button>
+          </div>
+          <span v-if="errors.password" class="error">{{ errors.password }}</span>
+        </div>
+        <a href="#" class="forgot-password">Forget password?</a> <br />
+        <button type="submit" class="login-button">Login</button>
+      
+        <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p>
+      </form>
     </div>
   </div>
-  </template>
-  
-  <style scoped>
-  /* General Styling */
-  .login-page {
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+      errors: {}
+    };
+  },
+  methods: {
+    validateForm() {
+      this.errors = {};
+
+      if (!this.username) {
+        this.errors.username = 'Username is required.';
+      }
+
+      if (!this.password) {
+        this.errors.password = 'Password is required.';
+      }
+
+      if (!Object.keys(this.errors).length) {
+        // Proceed with form submission
+        this.submitForm();
+      }
+    },
+    submitForm() {
+      // Handle form submission
+      console.log('Form submitted:', { username: this.username, password: this.password });
+    }
+  }
+};
+</script>
+
+<style scoped>
+/* General Styling */
+.login-page {
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
-  }
+}
 
-  /* Left Panel */
-  .left-panel {
+/* Left Panel */
+.left-panel {
   flex: 1;
   background-image: linear-gradient(rgba(66, 66, 66, 0.5), rgba(51, 51, 51, 0.116)),url('../assets/unsplash.jpg');
   background-size: cover;
@@ -53,142 +88,160 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  }
+}
 
-  .left-panel h1 {
+.left-panel h1 {
   font-size: 36px;
   font-weight: bold;
   margin-bottom: 20px;
-  }
+}
 
-  .left-panel p {
+.left-panel p {
   font-size: 18px;
   line-height: 1.5;
   margin-bottom: 30px;
-  }
+}
 
-  .image-container {
+.image-container {
   width: 100%;
   text-align: center;
-  }
+}
 
-  .image-container img {
+.image-container img {
   width: 100%;
   max-width: 400px;
   object-fit: cover;
-  }
+}
 
-  /* Right Panel */
-  .right-panel {
+/* Right Panel */
+.right-panel {
   flex: 1;
   padding: 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  }
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .right-panel h2 {
+.right-panel h2 {
   font-size: 28px;
   margin-bottom: 10px;
-  }
+}
 
-  .right-panel p {
+.right-panel p {
   font-size: 16px;
   margin-bottom: 20px;
-  }
+}
 
-  .gmail-login {
+.gmail-login {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 20px;
-  border: 1px solid #5cda63;
+  border: 1px solid #29a12f;
   background-color: transparent;
-  color: #5cda63;
+  color: #29a12f;
   border-radius: 5px;
   cursor: pointer;
   margin-bottom: 20px;
-  }
+}
 
-  .gmail-login img {
+.gmail-login img {
   width: 20px;
   height: 20px;
-  }
+}
 
-  form {
-  width: 100%;
-  }
+form {
+  width: 80%;
+  height: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(119, 118, 118, 0.1);
+  border-radius: 5px;
+  padding: 20px;
+  /* position: relative;
+  left:90px; */
+  border-radius: 40px;
+}
 
-  .form-group {
+.form-group {
   text-align: left;
   margin-bottom: 20px;
   width: 100%;
-  }
+}
 
-  label {
+label {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
   color: #555;
-  }
+}
 
-  input {
-  width: 100%;
+input {
+  width: 90%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
-  }
+}
 
-  .password-container {
+.password-container {
   display: flex;
   align-items: center;
-  }
+  width: 93%;
+}
 
-  .password-container input {
+.password-container input {
   flex: 1;
-  }
+  width: 90%;
+}
 
-  .toggle-password {
+.toggle-password {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 16px;
   margin-left: 5px;
-  }
+}
 
-  .forgot-password {
+.forgot-password {
   font-size: 14px;
-  color: #5cda63;
+  color: #1717e4;
   text-decoration: none;
   margin-bottom: 20px;
   display: inline-block;
-  }
+}
 
-  .login-button {
-  width: 100%;
+.login-button {
+  width: 50%;
   padding: 10px;
-  background-color: #5cda63;
+  background-color: #29a12f;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  }
+}
 
-  .signup-link {
+.signup-link {
   font-size: 14px;
   margin-top: 10px;
-  }
+}
 
-  .signup-link a {
-  color: #437ce6;
+.signup-link a {
+  color: #1717e4;
   text-decoration: none;
-  }
+}
 
-  /* Responsive Styling */
-  @media (max-width: 768px) {
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
   .login-page {
     flex-direction: column;
   }
@@ -222,9 +275,9 @@
     margin-left: 0;
     margin-top: 10px;
   }
-  }
+}
 
-  @media (max-width: 480px) {
+@media (max-width: 480px) {
   .left-panel, .right-panel {
     padding: 10px;
   }
@@ -257,7 +310,7 @@
     padding: 8px;
   }
 
-  .login-button {
+  .register-button {
     padding: 8px;
     font-size: 14px;
   }
@@ -269,6 +322,5 @@
   .signup-link {
     font-size: 12px;
   }
-  }
-  
-  </style>
+}
+</style>
