@@ -136,7 +136,63 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     summary: Update an existing user
+ *     description: Updates and returns the updated user data.
+ *     tags:
+ *      - User Controller
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phoneNumber:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               country:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated user data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 phoneNumber:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 country:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
 router.put("/:id", async (req, res) => {
     try {
         const { email, password } = req.body;
