@@ -2,6 +2,7 @@ package com.pramukh.productservice.Service;
 
 import com.pramukh.productservice.DTO.ProductRequestDto;
 import com.pramukh.productservice.DTO.ProductResponseDto;
+import com.pramukh.productservice.DTO.UpdateProductDTO;
 import com.pramukh.productservice.GlobalExceptionHandler.EmptyInputException;
 import com.pramukh.productservice.GlobalExceptionHandler.ProductNotFoundException;
 import com.pramukh.productservice.Model.ProductEntity;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Service
@@ -102,5 +103,35 @@ public class ProductService {
                     .build());
         }
         return products;
+    }
+
+    public String deleteProduct(String id) {
+        System.out.println("Entered delete product service");
+        Optional<ProductEntity> result = productRespository.findById(id);
+        if (result.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        }
+        productRespository.deleteById(id);
+        return "Product deleted successfully";
+    }
+
+
+    public String updateProduct(String id, UpdateProductDTO updateProductDTO) {
+        Optional<ProductEntity> result = productRespository.findById(id);
+        if (result.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        }
+
+        ProductEntity product = ProductEntity.builder(
+                .id(id)
+                .name(updateProductDTO.getName())
+                .description(updateProductDTO.getDescription())
+                .quantity(updateProductDTO.getQuantity())
+                .category(updateProductDTO.getCategory())
+                .price(updateProductDTO.getPrice())
+                .build();
+        );
+
+        return "Product updated successfully";
     }
 }
