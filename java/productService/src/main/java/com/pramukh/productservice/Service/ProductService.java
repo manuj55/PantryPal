@@ -122,16 +122,14 @@ public class ProductService {
             throw new ProductNotFoundException("Product not found");
         }
 
-        ProductEntity product = ProductEntity.builder(
-                .id(id)
-                .name(updateProductDTO.getName())
-                .description(updateProductDTO.getDescription())
-                .quantity(updateProductDTO.getQuantity())
-                .category(updateProductDTO.getCategory())
-                .price(updateProductDTO.getPrice())
-                .build();
-        );
+        ProductEntity product = result.get();
+        product.setName(updateProductDTO.getName());
+        product.setDescription(updateProductDTO.getDescription());
+        product.setQuantity(updateProductDTO.getQuantity());
+        product.setCategory(updateProductDTO.getCategory());
+        product.setPrice(updateProductDTO.getPrice());
 
+        productRespository.save(product);
         return "Product updated successfully";
     }
 }
