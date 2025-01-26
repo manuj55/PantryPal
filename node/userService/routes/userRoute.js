@@ -139,6 +139,16 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
+        const { email, password } = req.body;
+        if (email) {
+            const existingUser = await User.findOne({ email });
+            if (existingUser && existingUser._id.toString() !== req.params.id) {
+                return res.status(400).json({ msg: "Email is already used by other user" });
+            }
+        }
+        if (password) {
+            return res.status(400).json({ msg: "Password cannot be changed" });
+        }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ msg: "User not found" });
