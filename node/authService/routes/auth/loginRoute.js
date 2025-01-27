@@ -6,7 +6,7 @@ const {
     generateJWTWithPrivateKey,
     fetchUsers,
 } = require("./util");
-const { ROLES } = require("../../../consts");
+const { ROLES } = require("../../consts");
 const { access } = require("fs");
 
 const router = express.Router();
