@@ -1,4 +1,4 @@
-# my-vue-project
+# fresh-basket
 
 ## Project setup
 ```
