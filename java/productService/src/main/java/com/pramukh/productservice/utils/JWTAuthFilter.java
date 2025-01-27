@@ -16,9 +16,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        System.out.println("JWTAuthFilter invoked" +  request.getHeader("Authorization"));
+        System.out.println("JWTAuthFilter invoked");
         String header = request.getHeader("Authorization");
-        System.out.println(header);
         if (header == null || !header.startsWith("Bearer")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Authorization header is missing");
             return;
@@ -28,7 +27,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         try {
 
             DecodedJWT jwt = JWTvalidator.validate(token);
-            System.out.println("JWT validated");
             List<String> endpointRoles = getRoles(request);
             System.out.println(endpointRoles);
             if (!endpointRoles.isEmpty()) {
@@ -39,7 +37,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 }
             }
 
-            System.out.println("Filter passed, proceeding to next step.");
             chain.doFilter(request, response);
             System.out.println("Filter completed execution.");
 
@@ -77,6 +74,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         if (endpoint.contains("/api/products") &&  method.equals("DELETE")) {
             return List.of("admin");
         }
-        return List.of();
+        return List.of("");
     }
 }
