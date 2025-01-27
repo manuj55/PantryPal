@@ -2,6 +2,7 @@ package com.pramukh.productservice.Controller;
 
 import com.pramukh.productservice.DTO.ProductRequestDto;
 import com.pramukh.productservice.DTO.ProductResponseDto;
+import com.pramukh.productservice.DTO.UpdateProductDTO;
 import com.pramukh.productservice.Service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,8 +36,9 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDto>> getProducts() {
         List<ProductResponseDto> products = productService.getProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
-
     }
+
+
 
     @GetMapping("/products/category/{category}")
     @Operation(summary = "Get products by category")
@@ -50,6 +52,21 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDto>> getProductsByName(@PathVariable String name) {
         List<ProductResponseDto> products = productService.getProductsByName(name);
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/products/{id}")
+    @Operation(summary = "Delete product by id")
+    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
+        System.out.println("Entered delete product controller");
+        productService.deleteProduct(id);
+        return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
+    }
+
+    @PutMapping("/products/{id}")
+    @Operation(summary = "Update product by id")
+    public ResponseEntity<String> updateProduct(@PathVariable String id, @RequestBody UpdateProductDTO updateProductDTO) {
+        productService.updateProduct(id, updateProductDTO);
+        return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
     }
 
 }
