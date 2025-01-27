@@ -1,5 +1,9 @@
 const express = require("express");
 const User = require("../models/user")
+
+const { verifyRole } = require("./auth/util");
+const { ROLES } = require("../../consts");
+
 const router = express.Router();
 
 
@@ -124,7 +128,7 @@ router.get("/", async (req, res) => {
  *         description: Internal Server Error
  */
 //get user by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), async (req, res) => {
     try {
         const userByID = await User.findById(req.params.id);
         if (!userByID) {
