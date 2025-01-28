@@ -68,7 +68,7 @@ export default {
     },
     async handleSubmit() {
       try {
-        const response = await axios.post('http://localhost:5002', {
+        const response = await axios.post('http://localhost:5002/api/users', {
           username: this.username,
           email: this.email,
           password: this.password
