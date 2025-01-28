@@ -40,7 +40,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      username: '',
+      email: '', // Updated to match the API's "email" field
       password: '',
       errors: {}
     };
@@ -49,8 +49,8 @@ export default {
     validateForm() {
       this.errors = {};
 
-      if (!this.username) {
-        this.errors.username = 'Username is required.';
+      if (!this.email) {
+        this.errors.email = 'Email is required.';
       }
 
       if (!this.password) {
@@ -64,16 +64,20 @@ export default {
     },
     async submitForm() {
       try {
-        const response = await axios.post('http://localhost:5001/api/login', {
-          username: this.username,
+        // Send the login request to the auth service
+        const response = await axios.post('http://localhost:5001/api/login/user', {
+          email: this.email,
           password: this.password
         });
 
-        if (response.data.success) {
-          // Navigate to dashboard
+        if (response.data.token) {
+          // Save the token (optional: use localStorage or Vuex)
+          localStorage.setItem('authToken', response.data.token);
+
+          // Navigate to the dashboard
           this.$router.push('/dashboard');
         } else {
-          this.errors.general = 'Invalid username or password.';
+          this.errors.general = 'Invalid email or password.';
         }
       } catch (error) {
         this.errors.general = 'An error occurred. Please try again.';
@@ -81,6 +85,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style scoped>
