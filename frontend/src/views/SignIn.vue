@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="right-panel">
-      <form @submit.prevent="validateForm">
+      <form @submit.prevent="handleSubmit">
         <h2>Welcome Back!</h2>
     
         
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -60,9 +62,22 @@ export default {
         this.submitForm();
       }
     },
-    submitForm() {
-      // Handle form submission
-      console.log('Form submitted:', { username: this.username, password: this.password });
+    async submitForm() {
+      try {
+        const response = await axios.post('http://localhost:5002', {
+          username: this.username,
+          password: this.password
+        });
+
+        if (response.data.success) {
+          // Navigate to dashboard
+          this.$router.push('/dashboard');
+        } else {
+          this.errors.general = 'Invalid username or password.';
+        }
+      } catch (error) {
+        this.errors.general = 'An error occurred. Please try again.';
+      }
     }
   }
 };

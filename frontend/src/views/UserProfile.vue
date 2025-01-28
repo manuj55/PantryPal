@@ -23,7 +23,7 @@
     <!-- Main Content -->
     <main class="content">
       <div class="header">
-        <img src="../assets/pexels-mixu-513809-1323206.jpg" class="header-image" alt="Header">
+        <img src="../assets/pleasantgrocery.jpg" class="header-image" alt="Header">
         <h1>{{ menuItems[activeItem].name }}</h1>
       </div>
 
@@ -31,7 +31,7 @@
         <div class="profile-info">
           <img src="../assets/gmail.png" class="profile-pic" alt="User">
           <div>
-            <h2>Peter Dilinger</h2>
+            <h2>{{profile.fullName}}</h2>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="right-panel">
-      <form @submit.prevent="validateForm">
+      <form @submit.prevent="handleSubmit">
         <h2>Welcome To Fresh Basket</h2>
         <p>Register to get started</p>
         <div class="form-group">
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -47,7 +49,7 @@ export default {
     };
   },
   methods: {
-    validateForm() {
+    validateform() {
       this.errors = {};
 
       if (!this.username) {
@@ -61,16 +63,27 @@ export default {
       }
 
       if (Object.keys(this.errors).length === 0) {
-        // Submit the form
-        this.submitForm();
+        this.handleSubmit();
       }
     },
-    submitForm() {
-      // Handle form submission
-      alert('Form submitted successfully!');
+    async handleSubmit() {
+      try {
+        const response = await axios.post('http://localhost:5002', {
+          username: this.username,
+          email: this.email,
+          password: this.password
+        });
+        if (response.status === 200) {
+          alert('Registered successfully!');
+        }
+      } catch (error) {
+        console.error('Error registering user:', error);
+        alert('Failed to register. Please try again.');
+      }
     }
   }
-};
+}
+
 </script>
 
 <style scoped>
