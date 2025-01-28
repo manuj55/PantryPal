@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const axios = require("axios");
-const { ROLES } = require("../../../consts");
+const { ROLES } = require("../../consts");
 
 dotenv.config();
 

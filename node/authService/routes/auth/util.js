@@ -5,8 +5,9 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const {
   USER_SERVICES,
+  AUTH_SERVICE_JKU,
   ROLES,
-} = require("../../../consts");
+} = require("../../consts");
 
 dotenv.config();
 
@@ -21,7 +22,7 @@ const publicKey = fs.readFileSync(
 );
 
 const kid = "1";
-const jku = `http://localhost:${process.env.PORT}/.well-known/jwks.json`;
+const jku = `${AUTH_SERVICE_JKU}/.well-known/jwks.json`;
 
 // Define additional headers
 const customHeaders = {
@@ -45,12 +46,13 @@ async function fetchUsers() {
     id: ROLES.AUTH_SERVICE,
     roles: [ROLES.AUTH_SERVICE],
   });
+  console.log("Docker token", token, "Docker user service", `${USER_SERVICES}`);
   const response = await axios.get(`${USER_SERVICES}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(response.data, "fetch users in auth");
+  console.log("Docker container fetch users log:", response.data);
   return response.data;
 }
 
