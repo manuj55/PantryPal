@@ -10,6 +10,7 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
+app.use(cors());
 // Middleware
 app.use(express.json());
 
@@ -18,12 +19,6 @@ app.use("/.well-known/jwks.json", publicKeyRoute);
 
 // Routes
 app.use("/api/login", loginRoute);
-
-app.use(cors({
-  origin: "http://localhost:8080",
-  methods: "GET,POST,PUT,DELETE",
-  credentials: true
-}));
 
 // Start server
 const PORT = process.env.PORT || 5001;

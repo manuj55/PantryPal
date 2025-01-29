@@ -16,6 +16,7 @@ dontenv.config();
 const app = express();
 
 //middleware
+app.use(cors());
 //parse incoming request to json
 app.use(express.json());
 
@@ -25,11 +26,7 @@ app.use("/api/users", userRoute)
 const PORT = process.env.PORT;
 
 // Enable CORS for Vue frontend (port 8080)
-app.use(cors({
-    origin: "http://localhost:8080",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true
-}));
+
 
 app.listen(PORT, () => {
     console.log(`userService Server is running on port ${PORT}`);
