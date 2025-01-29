@@ -21,7 +21,8 @@
           <label for="password">Password</label>
           <div class="password-container">
             <input type="password" id="password" v-model="password" placeholder="Enter your password" />
-            <button type="button" class="toggle-password"></button>
+          
+          <button type="button" class="toggle-password" @click="togglePasswordVisibility">👁️</button>
           </div>
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
@@ -38,6 +39,7 @@
 
 <script>
 import axios from 'axios';
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -48,6 +50,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['setUserName']),
     validateForm() {
       this.errors = {};
 
@@ -75,6 +78,9 @@ export default {
         if (response.data.access_token) {
           // Save the token (optional: use localStorage or Vuex)
           localStorage.setItem('authToken', response.data.access_token);
+
+          // Save the username in the store
+          this.setUserName(this.name);
 
           // Navigate to the dashboard
           this.$router.push('/dashboard');
@@ -263,7 +269,29 @@ input {
 }
 
 /* Responsive Styling */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .left-panel, .right-panel {
+    padding: 30px;
+  }
+
+  .left-panel h1 {
+    font-size: 32px;
+  }
+
+  .left-panel p {
+    font-size: 16px;
+  }
+
+  .right-panel h2 {
+    font-size: 26px;
+  }
+
+  .right-panel p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 992px) {
   .login-page {
     flex-direction: column;
   }
@@ -299,9 +327,9 @@ input {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .left-panel, .right-panel {
-    padding: 10px;
+    padding: 20px;
   }
 
   .left-panel h1 {
@@ -343,6 +371,53 @@ input {
 
   .signup-link {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .left-panel, .right-panel {
+    padding: 10px;
+  }
+
+  .left-panel h1 {
+    font-size: 24px;
+  }
+
+  .left-panel p {
+    font-size: 14px;
+  }
+
+  .right-panel h2 {
+    font-size: 20px;
+  }
+
+  .right-panel p {
+    font-size: 12px;
+  }
+
+  .gmail-login {
+    padding: 6px 12px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  input {
+    padding: 6px;
+  }
+
+  .register-button {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .forgot-password {
+    font-size: 10px;
+  }
+
+  .signup-link {
+    font-size: 10px;
   }
 }
 </style>

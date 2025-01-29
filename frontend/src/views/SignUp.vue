@@ -12,9 +12,9 @@
         <h2>Welcome To Fresh Basket</h2>
         <p>Register to get started</p>
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" placeholder="Enter your name" /> <br />
-          <span v-if="errors.username" class="error">{{ errors.username }}</span>
+          <label for="name">Name</label>
+          <input type="text" id="name" v-model="name" placeholder="Enter your name" /> <br />
+          <span v-if="errors.name" class="error">{{ errors.name }}</span>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -45,7 +45,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      username: '',
+      name: '',
       email: '',
       password: '',
       errors: {}
@@ -55,8 +55,8 @@ export default {
     validateform() {
       this.errors = {};
 
-      if (!this.username) {
-        this.errors.username = 'Username is required.';
+      if (!this.name) {
+        this.errors.name = 'name is required.';
       }
       if (!this.email) {
         this.errors.email = 'Email is required.';
@@ -72,7 +72,7 @@ export default {
     async handleSubmit() {
       try {
         const response = await axios.post('http://localhost:5002/api/users', {
-          name: this.username,
+          name: this.name,
           email: this.email,
           password: this.password
         });
@@ -181,8 +181,6 @@ form {
   box-shadow: 0 4px 8px rgba(119, 118, 118, 0.1);
   border-radius: 5px;
   padding: 20px;
-  /* position: relative;
-  left: 90px; */
   border-radius: 40px;
 }
 
@@ -262,6 +260,50 @@ input {
 }
 
 /* Responsive Styling */
+@media (max-width: 1200px) {
+  .left-panel, .right-panel {
+    padding: 40px;
+  }
+
+  .left-panel h1 {
+    font-size: 32px;
+  }
+
+  .left-panel p {
+    font-size: 16px;
+  }
+
+  .right-panel h2 {
+    font-size: 26px;
+  }
+
+  .right-panel p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 992px) {
+  .left-panel, .right-panel {
+    padding: 30px;
+  }
+
+  .left-panel h1 {
+    font-size: 30px;
+  }
+
+  .left-panel p {
+    font-size: 15px;
+  }
+
+  .right-panel h2 {
+    font-size: 24px;
+  }
+
+  .right-panel p {
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 768px) {
   .login-page {
     flex-direction: column;
@@ -295,6 +337,53 @@ input {
   .toggle-password {
     margin-left: 0;
     margin-top: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .left-panel, .right-panel {
+    padding: 10px;
+  }
+
+  .left-panel h1 {
+    font-size: 28px;
+  }
+
+  .left-panel p {
+    font-size: 14px;
+  }
+
+  .right-panel h2 {
+    font-size: 22px;
+  }
+
+  .right-panel p {
+    font-size: 12px;
+  }
+
+  .gmail-login {
+    padding: 8px 16px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  input {
+    padding: 8px;
+  }
+
+  .register-button {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .forgot-password {
+    font-size: 12px;
+  }
+
+  .signup-link {
+    font-size: 12px;
   }
 }
 
