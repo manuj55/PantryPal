@@ -1,7 +1,7 @@
 <template>
   <div class="app-layout">
-    <Sidebar />
-    <div class="main-content">
+    <Sidebar v-if="showSidebar" />
+    <div class="main-content" :class="{ 'full-width': !showSidebar }">
       <router-view />
     </div>
   </div>
@@ -9,11 +9,21 @@
 
 <script>
 import Sidebar from "@/components/Sidebar.vue";
-
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 export default {
   components: {
     Sidebar,
   },
+  setup() {
+    const route = useRoute();
+
+    // Hide sidebar for SignIn and SignUp routes
+    const showSidebar = computed(() => !["/signin", "/signup"].includes(route.path));
+
+    return { showSidebar };
+  },
+
 };
 </script>
 
@@ -39,10 +49,14 @@ export default {
   transition: margin-left 0.3s ease;
 }
 
+/* Adjust when Sidebar is hidden */
+.full-width {
+  margin-left: 0 !important;
+}
 
 @media (max-width: 992px) {
   .main-content {
-    margin-left: 200px; 
+    margin-left: 200px;
     padding: 15px;
   }
 }
