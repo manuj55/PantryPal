@@ -30,7 +30,10 @@
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
         <button type="submit" class="register-button">Register</button>
-        <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p>
+        <!-- <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p> -->
+        <router-link to="/signin" class="SignIn-link" active-class="active">
+          <p>Do you already have an account? SignIn </p>
+         </router-link>
       </form>
     </div>
   </div>

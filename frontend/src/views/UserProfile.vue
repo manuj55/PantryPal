@@ -73,6 +73,8 @@
 
   
   <script>
+  import axios from 'axios';
+
   export default {
     name: "UserProfile",
     data() {
@@ -102,7 +104,18 @@
         this.activeItem = index;
       },
       toggleEditMode() {
+        if (this.isEditing) {
+          this.saveProfile();
+        }
         this.isEditing = !this.isEditing;
+      },
+      async saveProfile() {
+        try {
+          const response = await axios.put('http://localhost:5002/api/users', this.profile);
+          console.log('Profile updated successfully:', response.data);
+        } catch (error) {
+          console.error('Error updating profile:', error);
+        }
       }
     },
   };

@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="left-panel">
-      <h1>Fresh Basket.</h1>
+      <h1>FRESH BASKET.</h1>
       <p>
         Freshness Delivered, <br />
         Convenience at Your Doorstep!
@@ -28,7 +28,9 @@
         <a href="#" class="forgot-password">Forget password?</a> <br />
         <button type="submit" class="login-button">Login</button>
       
-        <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p>
+        <!-- <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p> -->
+        <router-link to="/signup" class="signin-link" active-class="active">
+           <p>Don't have an account? SignUp </p>  </router-link>
       </form>
     </div>
   </div>
