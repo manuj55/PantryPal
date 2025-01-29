@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar" :class="{ 'collapsed': isCollapsed }">
       <div class="sidebar-logo">
-        <img src="@/assets/logo.png" alt="FreshBasket Logo" class="logo" />
+        <img src="@/assets/logo-ct.png" alt="FreshBasket Logo" class="logo" />
         <span v-if="!isCollapsed">FreshBasket</span>
         <button class="toggle-btn" @click="toggleSidebar">
           <font-awesome-icon :icon="isCollapsed ? 'bars' : 'times'" />
@@ -10,7 +10,7 @@
       <ul class="nav-links">
         <li>
           <router-link to="/dashboard" class="nav-item" active-class="active">
-            <font-awesome-icon icon="tachometer-alt" />
+            <font-awesome-icon :icon="['fas', 'th-list']" />
             <span v-if="!isCollapsed">Dashboard</span>
           </router-link>
         </li>
@@ -22,8 +22,20 @@
       </li>
       <li>
         <router-link to="/billing" class="nav-item" active-class="active">
-          <font-awesome-icon icon="shopping-cart" />
+          <font-awesome-icon :icon="['fas', 'file-invoice']" />
           <span v-if="!isCollapsed">Billing</span>
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/orders" class="nav-item" active-class="active">
+          <font-awesome-icon :icon="['fas', 'box-open']" />
+          <span v-if="!isCollapsed">Orders</span>
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/UserProfile" class="nav-item" active-class="active">
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <span v-if="!isCollapsed">Profile</span>
         </router-link>
       </li>
       </ul>

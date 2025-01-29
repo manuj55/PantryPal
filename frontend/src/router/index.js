@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
-// import HomeView from "../views/HomeView.vue";
 import SignIn from "../views/SignIn.vue";
 import UserProfile from "../views/UserProfile.vue";
-
 import DashBoardView from "../views/DashBoard.vue";
 import CartView from "../views/Cart.vue";  
 import BillingView from "../views/BillingView.vue";  
+import OrdersView from "../views/OrdersView.vue"; 
+
 const routes = [
   {
     path: "/",
-    redirect: "/dashboard",  // Redirect root to dashboard
+    redirect: "/signin",  // Redirect root to dashboard
   },
   {
     path: "/dashboard",
@@ -31,6 +31,21 @@ const routes = [
     name: "about",
     component: () => import("../views/AboutView.vue"),
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   {
     path: "/signin",
     name: "signin",
@@ -46,6 +61,11 @@ const routes = [
     name: "signup",
     component: () =>
       import(/* webpackChunkName: "signup" */ "../views/SignUp.vue"),
+  },
+  {
+    path: "/orders",
+    name: "orders",
+    component: OrdersView,
   }
 ];
 
