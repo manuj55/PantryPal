@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="left-panel">
-      <h1>Fresh Basket.</h1>
+      <h1>FRESH BASKET.</h1>
       <p>
         Freshness Delivered, <br />
         Convenience at Your Doorstep!
@@ -21,34 +21,41 @@
           <label for="password">Password</label>
           <div class="password-container">
             <input type="password" id="password" v-model="password" placeholder="Enter your password" />
-            <button type="button" class="toggle-password"></button>
+          
+          <button type="button" class="toggle-password" @click="togglePasswordVisibility">👁️</button>
           </div>
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
         <a href="#" class="forgot-password">Forget password?</a> <br />
         <button type="submit" class="login-button">Login</button>
       
-        <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p>
+        <!-- <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p> -->
+        <router-link to="/signup" class="signin-link" active-class="active">
+           <p>Don't have an account? SignUp </p>  </router-link>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
-      username: '',
+      email: '', // Updated to match the API's "email" field
       password: '',
       errors: {}
     };
   },
   methods: {
+    ...mapActions(['setUserName']),
     validateForm() {
       this.errors = {};
 
       if (!this.username) {
-        this.errors.username = 'Username is required.';
+        this.errors.username = 'Email is required.';
       }
 
       if (!this.password) {
@@ -60,12 +67,33 @@ export default {
         this.submitForm();
       }
     },
-    submitForm() {
-      // Handle form submission
-      console.log('Form submitted:', { username: this.username, password: this.password });
+    async submitForm() {
+      try {
+        // Send the login request to the auth service
+        const response = await axios.post('http://localhost:5001/api/login/user', {
+          email: this.username,
+          password: this.password
+        });
+
+        if (response.data.access_token) {
+          // Save the token (optional: use localStorage or Vuex)
+          localStorage.setItem('authToken', response.data.access_token);
+
+          // Save the username in the store
+          this.setUserName(this.name);
+
+          // Navigate to the dashboard
+          this.$router.push('/dashboard');
+        } else {
+          this.errors.general = 'Invalid email or password.';
+        }
+      } catch (error) {
+        this.errors.general = 'An error occurred. Please try again.';
+      }
     }
   }
 };
+
 </script>
 
 <style scoped>
@@ -241,7 +269,29 @@ input {
 }
 
 /* Responsive Styling */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .left-panel, .right-panel {
+    padding: 30px;
+  }
+
+  .left-panel h1 {
+    font-size: 32px;
+  }
+
+  .left-panel p {
+    font-size: 16px;
+  }
+
+  .right-panel h2 {
+    font-size: 26px;
+  }
+
+  .right-panel p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 992px) {
   .login-page {
     flex-direction: column;
   }
@@ -277,9 +327,9 @@ input {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .left-panel, .right-panel {
-    padding: 10px;
+    padding: 20px;
   }
 
   .left-panel h1 {
@@ -321,6 +371,53 @@ input {
 
   .signup-link {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .left-panel, .right-panel {
+    padding: 10px;
+  }
+
+  .left-panel h1 {
+    font-size: 24px;
+  }
+
+  .left-panel p {
+    font-size: 14px;
+  }
+
+  .right-panel h2 {
+    font-size: 20px;
+  }
+
+  .right-panel p {
+    font-size: 12px;
+  }
+
+  .gmail-login {
+    padding: 6px 12px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  input {
+    padding: 6px;
+  }
+
+  .register-button {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .forgot-password {
+    font-size: 10px;
+  }
+
+  .signup-link {
+    font-size: 10px;
   }
 }
 </style>

@@ -8,13 +8,13 @@
       </p>
     </div>
     <div class="right-panel">
-      <form @submit.prevent="validateForm">
+      <form @submit.prevent="validateform">
         <h2>Welcome To Fresh Basket</h2>
         <p>Register to get started</p>
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" placeholder="Enter your name" /> <br />
-          <span v-if="errors.username" class="error">{{ errors.username }}</span>
+          <label for="name">Name</label>
+          <input type="text" id="name" v-model="name" placeholder="Enter your name" /> <br />
+          <span v-if="errors.name" class="error">{{ errors.name }}</span>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -30,28 +30,33 @@
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
         <button type="submit" class="register-button">Register</button>
-        <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p>
+        <!-- <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p> -->
+        <router-link to="/signin" class="SignIn-link" active-class="active">
+          <p>Do you already have an account? SignIn </p>
+         </router-link>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      username: '',
+      name: '',
       email: '',
       password: '',
       errors: {}
     };
   },
   methods: {
-    validateForm() {
+    validateform() {
       this.errors = {};
 
-      if (!this.username) {
-        this.errors.username = 'Username is required.';
+      if (!this.name) {
+        this.errors.name = 'name is required.';
       }
       if (!this.email) {
         this.errors.email = 'Email is required.';
@@ -61,16 +66,27 @@ export default {
       }
 
       if (Object.keys(this.errors).length === 0) {
-        // Submit the form
-        this.submitForm();
+        this.handleSubmit();
       }
     },
-    submitForm() {
-      // Handle form submission
-      alert('Form submitted successfully!');
+    async handleSubmit() {
+      try {
+        const response = await axios.post('http://localhost:5002/api/users', {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+        if (response.status === 200) {
+          alert('Registered successfully!');
+        }
+      } catch (error) {
+        console.error('Error registering user:', error);
+        alert('Failed to register. Please try again.');
+      }
     }
   }
-};
+}
+
 </script>
 
 <style scoped>
@@ -165,8 +181,6 @@ form {
   box-shadow: 0 4px 8px rgba(119, 118, 118, 0.1);
   border-radius: 5px;
   padding: 20px;
-  /* position: relative;
-  left: 90px; */
   border-radius: 40px;
 }
 
@@ -246,6 +260,50 @@ input {
 }
 
 /* Responsive Styling */
+@media (max-width: 1200px) {
+  .left-panel, .right-panel {
+    padding: 40px;
+  }
+
+  .left-panel h1 {
+    font-size: 32px;
+  }
+
+  .left-panel p {
+    font-size: 16px;
+  }
+
+  .right-panel h2 {
+    font-size: 26px;
+  }
+
+  .right-panel p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 992px) {
+  .left-panel, .right-panel {
+    padding: 30px;
+  }
+
+  .left-panel h1 {
+    font-size: 30px;
+  }
+
+  .left-panel p {
+    font-size: 15px;
+  }
+
+  .right-panel h2 {
+    font-size: 24px;
+  }
+
+  .right-panel p {
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 768px) {
   .login-page {
     flex-direction: column;
@@ -279,6 +337,53 @@ input {
   .toggle-password {
     margin-left: 0;
     margin-top: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .left-panel, .right-panel {
+    padding: 10px;
+  }
+
+  .left-panel h1 {
+    font-size: 28px;
+  }
+
+  .left-panel p {
+    font-size: 14px;
+  }
+
+  .right-panel h2 {
+    font-size: 22px;
+  }
+
+  .right-panel p {
+    font-size: 12px;
+  }
+
+  .gmail-login {
+    padding: 8px 16px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  input {
+    padding: 8px;
+  }
+
+  .register-button {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .forgot-password {
+    font-size: 12px;
+  }
+
+  .signup-link {
+    font-size: 12px;
   }
 }
 

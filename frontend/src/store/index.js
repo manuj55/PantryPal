@@ -3,6 +3,7 @@ import axios from "axios";
 
 export default createStore({
   state: {
+    name: [],
     products: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],

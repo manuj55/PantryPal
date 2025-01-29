@@ -1,37 +1,18 @@
 <template>
   <div class="container">
-    <!-- Sidebar created for reference -->
-    <!-- <aside class="sidebar"> -->
-      <!-- <div class="logo">
-        <img src="@/assets/logo.png" alt="FreshBasket">
-        <span>Groyo</span>
-      </div>
-      <nav>
-        <ul>
-          <li 
-            v-for="(item, index) in menuItems" 
-            :key="index" 
-            :class="{ active: activeItem === index }" 
-            @click="setActive(index)"
-          >
-            <i :class="item.icon"></i> {{ item.name }}
-          </li>
-        </ul>
-      </nav> -->
-    <!-- </aside> -->
 
     <!-- Main Content -->
     <main class="content">
       <div class="header">
-        <img src="../assets/pexels-mixu-513809-1323206.jpg" class="header-image" alt="Header">
+        <img src="../assets/pleasantgrocery.jpg" class="header-image" alt="Header">
         <h1>{{ menuItems[activeItem].name }}</h1>
       </div>
 
       <div class="profile-card">
         <div class="profile-info">
-          <img src="../assets/gmail.png" class="profile-pic" alt="User">
+          <!-- <img src="" class="profile-pic" alt="User"> -->
           <div>
-            <h2>Peter Dilinger</h2>
+            <h2>{{profile.Name}}</h2>
           </div>
         </div>
       </div>
@@ -41,8 +22,6 @@
         <button @click="toggleEditMode" class="edit-btn">
           {{ isEditing ? 'Save' : 'Edit' }}
         </button>
-        <p v-if="!isEditing">{{ profileInfo }}</p>
-        <textarea v-else v-model="profileInfo"></textarea>
         
         <ul>
           <li><strong>Full Name:</strong> 
@@ -73,20 +52,22 @@
 
   
   <script>
+  import axios from 'axios';
+
   export default {
     name: "UserProfile",
     data() {
       return {
         activeItem: 0,  // Default active menu item (Profile)
         isEditing: false, // Track edit mode
-        profileInfo: "Peter Dilinger...",
+      
         profile: {
-          fullName: "Peter Dillinger",
-          mobile: "(44) 123 1234 123",
-          email: "Peter-Dillinger@mail.com",
-          address: "Ludwig Guttman Strasse 9,Wieblingen- Heidelberg, 69123",
-          location: "Germany"
-        },
+            Name: "",
+            mobile: "",
+            email: "",
+            address: "",
+            Country: ""
+          },
         menuItems: [
           { name: "Profile", icon: "fas fa-user" },
           { name: "Dashboard", icon: "fas fa-chart-bar" },
@@ -97,17 +78,39 @@
         ],
       };
     },
-    methods: {
-      setActive(index) {
-        this.activeItem = index;
-      },
-      toggleEditMode() {
-        this.isEditing = !this.isEditing;
+    created() {
+    this.fetchProfile();
+  },
+  methods: {
+    async fetchProfile() {
+      try {
+        const response = await axios.get('http://localhost:5002/api/users');
+        this.profile = response.data;
+      } catch (error) {
+        console.error('Error fetching profile:', error);
       }
     },
+    setActive(index) {
+      this.activeItem = index;
+    },
+    toggleEditMode() {
+      if (this.isEditing) {
+        this.saveProfile();
+      }
+      this.isEditing = !this.isEditing;
+    },
+    async saveProfile() {
+      try {
+        const response = await axios.put('http://localhost:5002/api/users', this.profile);
+        console.log('Profile updated successfully:', response.data);
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
+    }
+  }
   };
   </script>
-  
+
  <style scoped>
   /* Layout styles */
   .container {

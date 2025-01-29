@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <!-- <nav>
     <router-link to="/signin">SignIn</router-link> |
     <router-link to="/signup">SignUp</router-link> |
@@ -8,22 +7,16 @@
     <router-link to="/about">About</router-link>
   </nav> -->
   <router-view />
-=======
-  <div class="app-layout">
-    <Sidebar />
-    <div class="main-content">
-      <router-view />
-    </div>
-  </div>
->>>>>>> main
+ <!-- <Sidebar /> -->
+
 </template>
 
 <script>
-import Sidebar from "@/components/Sidebar.vue";
+// import Sidebar from "@/components/Sidebar.vue";
 
 export default {
   components: {
-    Sidebar,
+    // Sidebar,
   },
 };
 </script>
