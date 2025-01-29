@@ -43,7 +43,7 @@ router.post("/user", async (req, res) => {
             roles: [ROLES.USER],
         };
         const token = generateJWTWithPrivateKey(payload);
-        res.status(200).json({ access_token: token });
+        res.status(200).json({ access_token: token, id: user._id, name: user.name, email: user.email });
 
 
     } catch (error) {
