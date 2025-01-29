@@ -35,5 +35,7 @@ build/
 
 ##IDEA##
 
-../../.idea/
+.idea/
+../paymentService/
+
 
