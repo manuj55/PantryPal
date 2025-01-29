@@ -2,7 +2,7 @@ FROM openjdk:11
 
 LABEL version="1.0", author="Pramukh Prakash"
 
-EXPOSE 8080:8080
+EXPOSE 5004
 
 WORKDIR /app
 
