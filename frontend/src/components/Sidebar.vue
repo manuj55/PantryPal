@@ -32,6 +32,12 @@
           <span v-if="!isCollapsed">Orders</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/UserProfile" class="nav-item" active-class="active">
+          <font-awesome-icon :icon="['fas', 'user']" />
+          <span v-if="!isCollapsed">Profile</span>
+        </router-link>
+      </li>
       </ul>
     </div>
   </template>
