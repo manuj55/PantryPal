@@ -1,0 +1,19 @@
+services:
+  authservice:
+    build: ./authservice
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+
+  userservice:
+    build: ./userservice
+    ports:
+      - "5002:5002"
+    depends_on:
+      - authservice
+    networks:
+      - app-network
+
+networks:
+  app-network:
