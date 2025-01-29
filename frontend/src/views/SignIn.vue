@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="right-panel">
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="validateForm">
         <h2>Welcome Back!</h2>
     
         
@@ -49,8 +49,8 @@ export default {
     validateForm() {
       this.errors = {};
 
-      if (!this.email) {
-        this.errors.email = 'Email is required.';
+      if (!this.username) {
+        this.errors.username = 'Email is required.';
       }
 
       if (!this.password) {
@@ -66,13 +66,13 @@ export default {
       try {
         // Send the login request to the auth service
         const response = await axios.post('http://localhost:5001/api/login/user', {
-          email: this.email,
+          email: this.username,
           password: this.password
         });
 
-        if (response.data.token) {
+        if (response.data.access_token) {
           // Save the token (optional: use localStorage or Vuex)
-          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('authToken', response.data.access_token);
 
           // Navigate to the dashboard
           this.$router.push('/dashboard');

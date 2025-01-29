@@ -8,7 +8,7 @@
       </p>
     </div>
     <div class="right-panel">
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="validateform">
         <h2>Welcome To Fresh Basket</h2>
         <p>Register to get started</p>
         <div class="form-group">
@@ -69,7 +69,7 @@ export default {
     async handleSubmit() {
       try {
         const response = await axios.post('http://localhost:5002/api/users', {
-          username: this.username,
+          name: this.username,
           email: this.email,
           password: this.password
         });
