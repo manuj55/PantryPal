@@ -91,7 +91,7 @@ router.post("/", async (req, res) => {
  *         description: Internal Server Error
  */
 //get user 
-router.get("/", verifyRole([ROLES.AUTH_SERVICE]), async (req, res) => {
+router.get("/", verifyRole([ROLES.ADMIN, ROLES.AUTH_SERVICE]), async (req, res) => {
     try {
         const user = await User.find();
         res.status(200).json(user);
