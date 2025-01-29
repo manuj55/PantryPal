@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:17
 
 LABEL version="1.0", author="Pramukh Prakash"
 
