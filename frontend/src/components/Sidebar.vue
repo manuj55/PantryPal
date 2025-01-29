@@ -26,6 +26,12 @@
           <span v-if="!isCollapsed">Billing</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/orders" class="nav-item" active-class="active">
+          <font-awesome-icon :icon="['fas', 'box-open']" />
+          <span v-if="!isCollapsed">Orders</span>
+        </router-link>
+      </li>
       </ul>
     </div>
   </template>

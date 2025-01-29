@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import DashBoardView from "../views/DashBoard.vue";
 import CartView from "../views/Cart.vue";  
 import BillingView from "../views/BillingView.vue";  
+import OrdersView from "../views/OrdersView.vue"; 
+
 const routes = [
   {
     path: "/",
@@ -26,6 +28,11 @@ const routes = [
     path: "/about",
     name: "about",
     component: () => import("../views/AboutView.vue"),
+  },
+  {
+    path: "/orders",
+    name: "orders",
+    component: OrdersView,  
   },
 ];
 
