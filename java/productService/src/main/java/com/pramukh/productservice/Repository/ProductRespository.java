@@ -6,10 +6,12 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface ProductRespository extends MongoRepository<ProductEntity, Integer> {
+public interface ProductRespository extends MongoRepository<ProductEntity, String> {
 
     List<ProductEntity> findByCategory(String category);
 
     @Query("{ 'name': { $regex: ?0, $options: 'i' } }")
     List<ProductEntity> searchByName(String name);
+
+
 }

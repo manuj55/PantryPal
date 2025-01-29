@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export default createStore({
   state: {
+    name: [],
     products: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
