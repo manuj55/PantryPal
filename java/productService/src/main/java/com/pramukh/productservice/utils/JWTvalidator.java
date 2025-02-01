@@ -34,7 +34,9 @@ public class JWTvalidator {
             }
 
             JsonNode keys = fetchKeys(jku);
+            System.out.println(keys);
             RSAPublicKey publicKey = getPublicKeyPem(keys, kid);
+            System.out.println(publicKey);
 
             Algorithm algorithm = Algorithm.RSA256(publicKey, null);
             JWTVerifier verifier = JWT.require(algorithm).build();

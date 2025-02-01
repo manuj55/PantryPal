@@ -27,10 +27,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         try {
 
             DecodedJWT jwt = JWTvalidator.validate(token);
+            System.out.println(jwt);
             List<String> endpointRoles = getRoles(request);
             System.out.println(endpointRoles);
             if (!endpointRoles.isEmpty()) {
                 String[] userRoles = jwt.getClaim("role").asArray(String.class);
+                System.out.println(userRoles);
                 if (!userHasRequiredRole(endpointRoles, userRoles)) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this endpoint");
                     return;
@@ -62,7 +64,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println(endpoint);
         String method = request.getMethod();
         if (endpoint.contains("/api/products") && method.equals("GET")) {
-            return List.of("admin", "user");
+            return List.of("admin", "user","order_service");
         }
         if (endpoint.contains("/api/products") &&  method.equals("POST")) {
             return List.of("admin");
