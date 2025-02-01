@@ -32,7 +32,7 @@ public class JWTvalidator {
             if (!alg.equals("RS256")) {
                 throw new Exception("Invalid algorithm");
             }
-
+            System.out.println("before fetchKeys" + jku);
             JsonNode keys = fetchKeys(jku);
             System.out.println(keys);
             RSAPublicKey publicKey = getPublicKeyPem(keys, kid);
@@ -57,6 +57,7 @@ public class JWTvalidator {
                     X509EncodedKeySpec keySpec = new X509EncodedKeySpec(derBytes);
                     KeyFactory keyfactory = KeyFactory.getInstance("RSA");
                     RSAPublicKey publicKey = (RSAPublicKey) keyfactory.generatePublic(keySpec);
+                    System.out.println(publicKey);
                     return publicKey;
 
                 } catch (Exception ex) {
@@ -68,10 +69,21 @@ public class JWTvalidator {
     }
 
     private static JsonNode fetchKeys(String jku) throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
-        String keys = restTemplate.getForObject(jku, String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(keys);
-        return jsonNode.get("keys");
+        System.out.println("Entered fetchKeys before fetch keys");
+       RestTemplate restTemplate = new RestTemplate();
+        System.out.println("before passing it to restTemplate");
+        try {
+            String keys = restTemplate.getForObject(jku, String.class);
+            System.out.println("keys" + keys);
+            System.out.println("keys"+keys);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(keys);
+            return jsonNode.get("keys");
+        } catch (Exception e) {
+            System.err.println("Error fetching keys from " + jku);
+            e.printStackTrace();
+            throw new Exception("Failed to fetch keys", e);
+        }
+
     }
 }

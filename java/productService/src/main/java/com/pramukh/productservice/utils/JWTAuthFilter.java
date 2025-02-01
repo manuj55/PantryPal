@@ -15,11 +15,20 @@ import java.util.List;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            // Let the preflight pass through with 200 OK
+            response.setStatus(HttpServletResponse.SC_OK);
+            chain.doFilter(request, response);
+            return;
+        }
+
         System.out.println("JWTAuthFilter invoked");
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Authorization header is missing");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing");
             return;
         }
         System.out.println("Header present");
@@ -29,19 +38,19 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             DecodedJWT jwt = JWTvalidator.validate(token);
             System.out.println(jwt);
             List<String> endpointRoles = getRoles(request);
-            System.out.println(endpointRoles);
+            System.out.println(endpointRoles + "endpointRoles");
             if (!endpointRoles.isEmpty()) {
-                String[] userRoles = jwt.getClaim("role").asArray(String.class);
-                System.out.println(userRoles);
+                String[] userRoles = jwt.getClaim("roles").asArray(String.class);
+                System.out.println("userroles" + userRoles);
                 if (!userHasRequiredRole(endpointRoles, userRoles)) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this endpoint");
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                            "You are not authorized to access this endpoint");
                     return;
                 }
             }
 
             chain.doFilter(request, response);
             System.out.println("Filter completed execution.");
-
 
         } catch (Exception e) {
             System.out.println("Error in filter");
@@ -64,16 +73,16 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println(endpoint);
         String method = request.getMethod();
         if (endpoint.contains("/api/products") && method.equals("GET")) {
-            return List.of("admin", "user","order_service");
+            return List.of("admin", "user", "order_service");
         }
-        if (endpoint.contains("/api/products") &&  method.equals("POST")) {
+        if (endpoint.contains("/api/products") && method.equals("POST")) {
             return List.of("admin");
         }
 
-        if (endpoint.contains("/api/products") &&  method.equals("PUT")) {
+        if (endpoint.contains("/api/products") && method.equals("PUT")) {
             return List.of("admin");
         }
-        if (endpoint.contains("/api/products") &&  method.equals("DELETE")) {
+        if (endpoint.contains("/api/products") && method.equals("DELETE")) {
             return List.of("admin");
         }
         return List.of("");
