@@ -62,7 +62,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println(endpoint);
         String method = request.getMethod();
         if (endpoint.contains("/api/products") && method.equals("GET")) {
-            return List.of("admin", "user");
+            return List.of("admin", "user","order_service");
         }
         if (endpoint.contains("/api/products") &&  method.equals("POST")) {
             return List.of("admin");
