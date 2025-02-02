@@ -5,6 +5,7 @@ const cors = require("cors");
 //connect to the database
 const connectDB = require("./config/db.js")
 const userRoute = require("./routes/userRoute")
+const verifyRoute = require("./routes/verifyRoute.js")
 const swaggerDocs = require('./swagger.js')
 
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 
 app.use("/api/users", userRoute)
+app.use("/api", verifyRoute)
 
 const PORT = process.env.PORT;
 
