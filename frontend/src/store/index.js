@@ -114,8 +114,8 @@ export default createStore({
         }
     
         const orderData = {
-          orderId: uuidv4(), // Generate unique order ID
-          userId: state.userId, // Use stored userId from auth service
+          orderId: uuidv4(), 
+          userId: state.userId, 
           items: state.itemsInCart.map(({...rest }) => ({
             ...rest,
             price: parseFloat(rest.price),
@@ -125,7 +125,7 @@ export default createStore({
     
         console.log("Sending Order Data:", orderData);
     
-        const response = await axios.post("http://127.0.0.1:8000/orders/", orderData, {
+        const response = await axios.post("http://localhost:5003/orders/", orderData, {
           headers: { Authorization: `Bearer ${token}` },
         });
     
@@ -140,13 +140,13 @@ export default createStore({
 
     async fetchOrders({ commit }) {
       try {
-        const token = localStorage.getItem("authToken");  // ✅ Get token from local storage
+        const token = localStorage.getItem("authToken");  
         if (!token) {
           console.error("No auth token found.");
           return;
         }
     
-        const response = await axios.get("http://127.0.0.1:8000/orders/", {
+        const response = await axios.get("http://localhost:5003/orders/", {
           headers: { Authorization: `Bearer ${token}` }
         });
     
