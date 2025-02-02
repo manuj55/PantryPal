@@ -138,18 +138,18 @@ export default createStore({
       }
     },
 
-    async fetchOrders({ commit }) {
+    async fetchOrders({ commit, state }) {
       try {
         const token = localStorage.getItem("authToken");  
-        if (!token) {
-          console.error("No auth token found.");
+        if (!token || !state.userId) {
+          console.error("Authentication token or userId is missing.");
           return;
         }
     
-        const response = await axios.get("http://localhost:5003/orders/", {
+        const response = await axios.get(`http://localhost:5003/orders/${state.userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-    
+
         commit("SET_ORDERS", response.data);
       } catch (error) {
         console.error("Error fetching orders:", error.response?.data || error.message);
