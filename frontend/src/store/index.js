@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export default createStore({
   state: {
+    userId: null,
     name: [],
     products: [],
     filteredProducts: [],
@@ -51,12 +52,20 @@ export default createStore({
     SET_ORDERS(state, orders) {
       state.orders = orders; 
     },
+    SET_USER_ID(state, userId) {
+      state.userId = userId;
+    },
 
   },
   actions: {
     async fetchAllProducts({ commit }) {
       try {
-        const response = await axios.get("http://localhost:8080/api/products");
+        const token = localStorage.getItem("authToken"); // Retrieve token from local storage
+        const response = await axios.get("http://localhost:5004/api/products", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in the headers
+          },
+        });
         commit("SET_PRODUCTS", response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -64,7 +73,12 @@ export default createStore({
     },
     async fetchProductsByCategory({ commit }, category) {
       try {
-        const response = await axios.get(`http://localhost:8080/api/products/category/${category}`);
+        const token = localStorage.getItem("authToken"); // Retrieve token from local storage
+        const response = await axios.get(`http://localhost:5004/api/products/category/${category}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Attach token in the headers
+          },
+        });
         commit("SET_PRODUCTS", response.data);
       } catch (error) {
         console.error("Error fetching products by category:", error);
@@ -82,6 +96,9 @@ export default createStore({
       } else {
         commit("UPDATE_CART_QUANTITY", payload);
       }
+    },
+    setUserId({ commit }, userId) {
+      commit('SET_USER_ID', userId);
     },
     async placeOrder({ commit, state }) {
       if (state.itemsInCart.length === 0) {
@@ -125,8 +142,10 @@ export default createStore({
     getAllProducts: (state) => state.filteredProducts,
     getCategories: (state) => state.categories,
     getCartItems: (state) => state.itemsInCart,
+    getUserId: (state) => state.userId,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),
     getOrders: (state) => state.orders,
   },
 });
+ 
