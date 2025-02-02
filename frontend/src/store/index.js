@@ -105,22 +105,30 @@ export default createStore({
         alert("Your cart is empty!");
         return;
       }
-
+    
       try {
-
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          alert("User is not logged in.");
+          return;
+        }
+    
         const orderData = {
-          orderId: uuidv4(), // Generate unique order ID once
+          orderId: uuidv4(), // Generate unique order ID
+          userId: state.userId, // Use stored userId from auth service
           items: state.itemsInCart.map(({...rest }) => ({
             ...rest,
-            price: parseFloat(rest.price),   // Ensure price is a number
-            cartQuantity: parseInt(rest.cartQuantity) // Ensure quantity is an integer
+            price: parseFloat(rest.price),
+            cartQuantity: parseInt(rest.cartQuantity)
           })),
         };
-
+    
         console.log("Sending Order Data:", orderData);
-
-        const response = await axios.post("http://127.0.0.1:8000/orders/", orderData);
-
+    
+        const response = await axios.post("http://127.0.0.1:8000/orders/", orderData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
         if (response.status === 200) {
           commit("PLACE_ORDER");
           alert("Order placed successfully!");
@@ -129,14 +137,25 @@ export default createStore({
         console.error("Error placing order:", error.response?.data || error.message);
       }
     },
+
     async fetchOrders({ commit }) {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/orders/");
+        const token = localStorage.getItem("authToken");  // ✅ Get token from local storage
+        if (!token) {
+          console.error("No auth token found.");
+          return;
+        }
+    
+        const response = await axios.get("http://127.0.0.1:8000/orders/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+    
         commit("SET_ORDERS", response.data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Error fetching orders:", error.response?.data || error.message);
       }
-    },
+    }
+    
   },
   getters: {
     getAllProducts: (state) => state.filteredProducts,
