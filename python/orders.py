@@ -1,14 +1,26 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from config import MONGO_URI
 from schemas import OrderSchema
 from auth import decode_jwt_token
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+import json
+import jwt
+import base64
+import httpx
+from datetime import datetime, timedelta
+import os
+import re
+import httpx
+from jwt_generator import generate_jwt
+
 
 app = FastAPI()
 
-# Enable CORS
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -16,8 +28,20 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"],  
 )
+import os
 
-# MongoDB Connection
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+PUBLIC_KEY_PATH = os.path.join(BASE_DIR, "keys", "public.key")
+
+PUBLIC_KEY_METADATA = {
+    "kty": "RSA",
+    "kid": "1",
+    "use": "sig",
+    "alg": "RS256",
+    "e": "AQAB"
+}
+
+
 client = AsyncIOMotorClient(MONGO_URI)
 db = client["orders"]
 collection = db["Orders"]
@@ -35,8 +59,7 @@ async def add_orders(
         raise HTTPException(status_code=401, detail="Unauthorized: Token user ID does not match the requested user ID")
 
     order_data = order.dict()
-    order_data["userId"] = user_id  # Ensure user ID consistency
-
+    order_data["userId"] = user_id  
     result = await collection.insert_one(order_data)
     
     return {"message": "Order added successfully", "order_id": str(result.inserted_id)}
@@ -54,9 +77,63 @@ async def get_orders(user_id: str, decoded_token: dict = Depends(decode_jwt_toke
     if not orders:
         raise HTTPException(status_code=404, detail="No orders found for this user")
     
-    # ✅ Convert MongoDB's `ObjectId` to string before returning
+
     for order in orders:
         if "_id" in order and isinstance(order["_id"], ObjectId):
             order["_id"] = str(order["_id"])
 
     return orders
+
+
+@app.get("/products/")
+async def get_products():
+    """ Fetch all products from an external API, generating a JWT for authentication """
+    
+    try:
+
+        generated_token = generate_jwt(user_id="679eb9c5f806e7cc18b12f83")  
+
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "http://localhost:5004/api/products",
+                headers={"Authorization": f"Bearer {generated_token}"}
+            )
+
+            if response.status_code != 200:
+                raise HTTPException(status_code=response.status_code, detail="Failed to fetch products")
+
+        return response.json()
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching products: {str(e)}")
+    
+    
+@app.get("/public-key/", response_model=dict)
+async def get_public_key():
+    """ Serve the public key in JWK format (Replicating Node.js behavior) """
+    try:
+
+        with open(PUBLIC_KEY_PATH, "r") as public_key_file:
+            public_key_str = public_key_file.read()
+
+
+        match = re.search(
+            r"-----BEGIN PUBLIC KEY-----\n(.*?)\n-----END PUBLIC KEY-----",
+            public_key_str,
+            re.DOTALL,
+        )
+
+        if not match:
+            raise HTTPException(status_code=500, detail="Invalid public key format")
+
+
+        n_b64 = match.group(1).replace("\n", "")
+
+
+        PUBLIC_KEY_METADATA["n"] = n_b64
+
+        return {"keys": [PUBLIC_KEY_METADATA]}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error serving public key: {str(e)}")
