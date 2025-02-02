@@ -1,13 +1,17 @@
 package com.pramukh.paymentservice.Controller;
 
+import com.pramukh.paymentservice.DTO.PayementDetailsRequestDTO;
+import com.pramukh.paymentservice.DTO.PayementDetailsResponseDTO;
 import com.pramukh.paymentservice.DTO.PaymentRequestDto;
 import com.pramukh.paymentservice.DTO.PaymentResponseDto;
+import com.pramukh.paymentservice.Service.PaymentDetailsService;
 import com.pramukh.paymentservice.Service.StripeService;
 import com.stripe.exception.StripeException;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +24,9 @@ public class PaymentController {
     @Autowired
     private StripeService stripeService;
 
+    @Autowired
+    private PaymentDetailsService paymentDetailsService;
+
     @PostMapping("/payment")
     @RateLimiter(name = "paymentRateLimiter")
     @Operation(summary = "Make payment")
@@ -27,5 +34,13 @@ public class PaymentController {
         System.out.println("Payment triggeredd");
         PaymentResponseDto paymentResponseDto = stripeService.makepayment(paymentRequestDto);
         return ResponseEntity.ok(paymentResponseDto);
+    }
+
+    @PostMapping("/paymentDetails")
+    @RateLimiter(name = "paymentRateLimiter")
+    @Operation(summary = "Add payment details")
+    public ResponseEntity<PayementDetailsResponseDTO> addPaymentDetails(@RequestBody PayementDetailsRequestDTO payementDetailsRequestDTO)  {
+        PayementDetailsResponseDTO payementDetailsResponseDTO = paymentDetailsService.addPaymentDetails(payementDetailsRequestDTO);
+        return new ResponseEntity<>(payementDetailsResponseDTO, HttpStatus.OK);
     }
 }

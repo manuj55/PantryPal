@@ -42,7 +42,7 @@ public class StripeService {
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(lineItem)
                 .setSuccessUrl("http://localhost:8080/success")
-                .setCancelUrl("http://localhost:8080/cancel")
+                .setCancelUrl("http://localhost:8080/failure")
                 .build();
 
         Session session = null;
