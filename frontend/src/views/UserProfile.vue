@@ -1,18 +1,15 @@
 <template>
   <div class="container">
-
     <!-- Main Content -->
     <main class="content">
       <div class="header">
         <img src="../assets/pleasantgrocery.jpg" class="header-image" alt="Header">
-        <h1>{{ menuItems[activeItem].name }}</h1>
       </div>
 
       <div class="profile-card">
         <div class="profile-info">
-          <!-- <img src="" class="profile-pic" alt="User"> -->
           <div>
-            <h2>{{profile.Name}}</h2>
+            <h2>{{ profile.name }}</h2>
           </div>
         </div>
       </div>
@@ -25,12 +22,12 @@
         
         <ul>
           <li><strong>Full Name:</strong> 
-            <span v-if="!isEditing">{{ profile.fullName }}</span>
-            <input v-else v-model="profile.fullName">
+            <span v-if="!isEditing">{{ profile.name }}</span>
+            <input v-else v-model="profile.name">
           </li>
           <li><strong>Mobile:</strong> 
-            <span v-if="!isEditing">{{ profile.mobile }}</span>
-            <input v-else v-model="profile.mobile">
+            <span v-if="!isEditing">{{ profile.phoneNumber }}</span>
+            <input v-else v-model="profile.phoneNumber">
           </li>
           <li><strong>Email:</strong> 
             <span v-if="!isEditing">{{ profile.email }}</span>
@@ -40,9 +37,9 @@
             <span v-if="!isEditing">{{ profile.address }}</span>
             <input v-else v-model="profile.address">
           </li>
-          <li><strong>Location:</strong> 
-            <span v-if="!isEditing">{{ profile.location }}</span>
-            <input v-else v-model="profile.location">
+          <li><strong>Country:</strong> 
+            <span v-if="!isEditing">{{ profile.country }}</span>
+            <input v-else v-model="profile.country">
           </li>
         </ul>
       </div>
@@ -50,48 +47,45 @@
   </div>
 </template>
 
-  
-  <script>
-  import axios from 'axios';
+<script>
+import axios from 'axios';
+import { mapGetters} from 'vuex';
 
-  export default {
-    name: "UserProfile",
-    data() {
-      return {
-        activeItem: 0,  // Default active menu item (Profile)
-        isEditing: false, // Track edit mode
-      
-        profile: {
-            Name: "",
-            mobile: "",
-            email: "",
-            address: "",
-            Country: ""
-          },
-        menuItems: [
-          { name: "Profile", icon: "fas fa-user" },
-          { name: "Dashboard", icon: "fas fa-chart-bar" },
-          { name: "Cart", icon: "fas fa-shopping-cart" },
-          { name: "Billing", icon: "fas fa-file-invoice" },
-          { name: "Sign In", icon: "fas fa-sign-in-alt" },
-          { name: "Sign Up", icon: "fas fa-user-plus" }
-        ],
-      };
-    },
-    created() {
+export default {
+  name: "UserProfile",
+  data() {
+    return {
+      isEditing: false, 
+      profileId: this.getUserId, 
+      profile: {
+        name: "",    
+        email: "",
+        phoneNumber: "",  
+        address: "",
+        country: ""  
+      }
+    };
+  },
+  created() {
     this.fetchProfile();
   },
+  computed: {   
+      ...mapGetters(["getUserId"]), // getting the userId from the store
+
+     },
   methods: {
     async fetchProfile() {
       try {
-        const response = await axios.get('http://localhost:5002/api/users');
+        const token = localStorage.getItem("authToken"); 
+        const response = await axios.get(`http://localhost:5002/api/users/${this.getUserId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        });
         this.profile = response.data;
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error("Error fetching profile:", error);
       }
-    },
-    setActive(index) {
-      this.activeItem = index;
     },
     toggleEditMode() {
       if (this.isEditing) {
@@ -100,16 +94,33 @@
       this.isEditing = !this.isEditing;
     },
     async saveProfile() {
-      try {
-        const response = await axios.put('http://localhost:5002/api/users', this.profile);
-        console.log('Profile updated successfully:', response.data);
-      } catch (error) {
-        console.error('Error updating profile:', error);
-      }
-    }
+  try {
+    const token = localStorage.getItem("authToken"); 
+
+   
+    const profileData = {
+      name: this.profile.name,
+      email: this.profile.email,
+      phoneNumber: this.profile.phoneNumber,
+      address: this.profile.address,
+      country: this.profile.country
+    };
+
+    await axios.put(`http://localhost:5002/api/users/${this.getUserId}`, profileData, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+        "Content-Type": "application/json", 
+      },
+    });
+    console.log("Profile updated successfully");
+  } catch (error) {
+    console.error("Error updating profile:", error);
   }
-  };
-  </script>
+}
+
+  }
+};
+</script>
 
  <style scoped>
   /* Layout styles */
