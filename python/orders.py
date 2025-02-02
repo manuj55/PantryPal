@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel
-from typing import List
 from bson import ObjectId
+from config import MONGO_URI
+from schemas import OrderSchema
+from auth import decode_jwt_token
 
 app = FastAPI()
 
@@ -17,33 +18,45 @@ app.add_middleware(
 )
 
 # MongoDB Connection
-MONGO_URI = "mongodb+srv://Yathish:Goldenhand%40008@cluster0.chil8.mongodb.net/orders?retryWrites=true&w=majority"
 client = AsyncIOMotorClient(MONGO_URI)
 db = client["orders"]
 collection = db["Orders"]
 
-# Order Schema
-class OrderItem(BaseModel):
-    id: str
-    title: str
-    description: str
-    price: float
-    category: str
-    cartQuantity: int
+@app.post("/orders/{user_id}", response_model=dict)
+async def add_orders(
+    user_id: str, 
+    order: OrderSchema, 
+    decoded_token: dict = Depends(decode_jwt_token)
+):
+    """ Create an order only if the user_id matches the one in the JWT token """
+    
+    token_user_id = decoded_token.get("id")
+    if not token_user_id or token_user_id != user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized: Token user ID does not match the requested user ID")
 
-class OrderSchema(BaseModel):
-    orderId: str
-    items: List[OrderItem]
-
-# Create Order with Single Order ID
-@app.post("/orders/", response_model=dict)
-async def add_orders(order: OrderSchema):
     order_data = order.dict()
+    order_data["userId"] = user_id  # Ensure user ID consistency
+
     result = await collection.insert_one(order_data)
+    
     return {"message": "Order added successfully", "order_id": str(result.inserted_id)}
 
-# Fetch All Orders
-@app.get("/orders/", response_model=List[OrderSchema])
-async def get_orders():
-    orders = await collection.find().to_list(None)
+@app.get("/orders/{user_id}")
+async def get_orders(user_id: str, decoded_token: dict = Depends(decode_jwt_token)):
+    """ Fetch all orders for a user, ensuring they are authorized """
+
+    token_user_id = decoded_token.get("id")
+    if not token_user_id or token_user_id != user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized: Token user ID does not match the requested user ID")
+
+    orders = await collection.find({"userId": user_id}).to_list(None)
+    
+    if not orders:
+        raise HTTPException(status_code=404, detail="No orders found for this user")
+    
+    # ✅ Convert MongoDB's `ObjectId` to string before returning
+    for order in orders:
+        if "_id" in order and isinstance(order["_id"], ObjectId):
+            order["_id"] = str(order["_id"])
+
     return orders
