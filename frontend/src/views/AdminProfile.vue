@@ -1,330 +1,426 @@
-<!-- <template>
-    <div class="orders-container">
-      <h2 class="title"> List of products</h2>
- 
- 
-      <div v-if="loading" class="loading">
-        <p>Loading orders...</p>
+<template>
+    <div class="container">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <input type="text" v-model="searchQuery" placeholder="Search for Product" class="search-input" @input="filterProducts" />
+        <select v-model="selectedCategory" class="category-filter">
+        <option value="">All Categories</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Vegetables">Vegetables</option>
+        </select>
+        <button class="add-btn" @click="openAddModal">Add Product</button>
       </div>
- 
-      <table v-else-if="orders.length > 0" class="orders-table">
+  
+      <!-- Product Table -->
+      <div class="table-container">
+        <table>
         <thead>
           <tr>
-            <th>Order ID</th>
-            <th>Item</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Category</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Price</th>
+          <th>Description</th>
+          <th>Quantity</th>
+          <th>Category</th>
+          <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="order in orders" :key="order.id">
-            <td>{{ order.id }}</td>
-            <td>{{ order.title }}</td>
-            <td>${{ order.price.toFixed(2) }}</td>
-            <td>{{ order.quantity }}</td>
-            <td>{{ order.category }}</td>
+          <tr v-for="(product, index) in filteredProducts" :key="index">
+          <td>{{ product.title }}</td>
+          <td :class="{ 'available': product.status === 'Available', 'disabled': product.status === 'Disabled' }">
+            {{ product.status }}
+          </td>
+          <td>${{ product.price.toFixed(2) }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.quantity }}</td>
+          <td>{{ product.category }}</td>
+          <td>
+            <div class="action-buttons">
+            <button class="edit-btn" @click="openEditModal(product.id)">Edit</button>
+            <button class="delete-btn" @click="deleteProduct(product.id)">Delete</button>
+            </div>
+          </td>
+          </tr>
+          <tr v-if="filteredProducts.length === 0">
+          <td colspan="8" class="empty-message">No products available</td>
           </tr>
         </tbody>
-      </table>
- 
- 
-      <p v-else class="no-orders">No orders found.</p>
-    </div>
-  </template>
- 
-  <script>
-  import { mapGetters, mapActions } from "vuex";
- 
-  export default {
-    name: "OrdersView",
-    data() {
-      return {
-        loading: false,
-      };
-    },
-    computed: {
-      ...mapGetters(["getOrders"]),
-      orders() {
-        return this.getOrders;
-      },
-    },
-    methods: {
-      ...mapActions(["fetchOrders"]),
-      async loadOrders() {
-        this.loading = true;
-        await this.fetchOrders();
-        this.loading = false;
-      },
-    },
-    mounted() {
-      this.loadOrders();
-      setInterval(this.loadOrders, 10000);
-    },
-  };
-  </script>
- 
-  <style scoped>
-  .orders-container {
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
- 
-  .title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-  }
- 
-  .orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-  }
- 
-  .orders-table th, .orders-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-  }
- 
-  .orders-table th {
-    background: #28a745;
-    color: white;
-  }
- 
-  .orders-table tbody tr:nth-child(even) {
-    background: #f9f9f9;
-  }
- 
-  .orders-table tbody tr:hover {
-    background: #e6ffe6;
-  }
- 
-  .no-orders {
-    font-size: 1.2rem;
-    color: #888;
-    margin-top: 20px;
-  }
- 
-  .loading {
-    font-size: 1.2rem;
-    color: #555;
-  }
-  </style>
-  -->
+        </table>
+      </div>
+  
+       <!-- Add Product Modal -->
+    <div v-show="addModalActive" class="modal">
+      <div class="modal-content">
+        <h3>Add Product</h3>
+        <label>Name:</label>
+        <input type="text" v-model="newProduct.name" />
 
-  <template>
-    <div class="flex h-screen bg-gray-100">
-      <!-- Sidebar -->
-      <aside class="w-64 bg-gray-900 text-white flex flex-col">
-        <div class="p-4 text-xl font-bold">iCompseller</div>
-        <nav class="flex-1">
-          <ul>
-            <!-- <li class="sidebar-item"><a href="#">Onboarding</a></li>
-            <li class="sidebar-item"><a href="#">Dashboard</a></li> -->
-            <li class="sidebar-item"><a href="#">Orders</a></li>
-            <li class="sidebar-item active"><a href="#">Products</a></li>
-            <!-- <li class="sidebar-item"><a href="#">Customers</a></li>
-            <li class="sidebar-item"><a href="#">Promotions</a></li>
-            <li class="sidebar-item"><a href="#">Pages</a></li>
-            <li class="sidebar-item"><a href="#">Languages</a></li>
-            <li class="sidebar-item"><a href="#">Themes</a></li>
-            <li class="sidebar-item"><a href="#">Apps</a></li>
-            <li class="sidebar-item"><a href="#">Settings</a></li> -->
-          </ul>
-        </nav>
-      </aside>
-  
-      <!-- Main Content -->
-      <div class="flex-1 p-6">
-        <div class="flex justify-between items-center mb-4">
-          <h1 class="text-2xl font-semibold">Products</h1>
-          <div>
-            <button class="btn btn-primary">Add Product</button>
-          </div>
-        </div>
-  
-        <!-- Search and Filters -->
-        <div class="bg-white p-4 rounded shadow mb-4 flex gap-4">
-          <input type="text" placeholder="Search for Product" class="input-field" />
-          <select class="input-field">
-            <option>All Categories</option>
-          </select>
-          <select class="input-field">
-            <option>All Products</option>
-          </select>
-          <button class="text-blue-500">Clear Filters</button>
-        </div>
-  
-        <!-- Product Table -->
-        <div class="bg-white rounded shadow overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="table-header">
-                <th class="p-3"><input type="checkbox" /></th>
-                <th class="p-3">Name</th>
-                <th class="p-3">Status</th>
-                <th class="p-3">Stock</th>
-                <th class="p-3">Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="product in products" :key="product.id" class="table-row">
-                <td class="p-3"><input type="checkbox" /></td>
-                <td class="p-3 flex items-center">
-                  <img :src="product.image" alt="Product" class="product-image" />
-                  {{ product.name }}
-                </td>
-                <td class="p-3">
-                  <span :class="getStatusClass(product.status)">
-                    ● {{ product.status }}
-                  </span>
-                </td>
-                <td class="p-3">{{ product.stock }}</td>
-                <td class="p-3">${{ product.price }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <label>Status:</label>
+        <select v-model="newProduct.status">
+          <option value="Available">Available</option>
+          <option value="Disabled">Disabled</option>
+        </select>
+
+        <label>Price:</label>
+        <input type="number" v-model="newProduct.price" />
+
+        <label>Description:</label>
+        <textarea v-model="newProduct.description"></textarea>
+
+        <label>Quantity:</label>
+        <input type="number" v-model="newProduct.quantity" />
+
+        <label>Category:</label>
+        <select v-model="newProduct.category">
+          <option>Fruits</option>
+          <option>Dairy</option>
+          <option>Vegetables</option>
+        </select>
+
+        <label>Image:</label>
+        <input type="file" @change="handleImageUpload" />
+
+        <div class="modal-buttons">
+          <button @click="saveNewProduct">Save</button>
+          <button class="cancel-btn" @click="addModalActive = false">Cancel</button>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+
+      <!-- Edit Modal -->
+      <div v-show="modalActive" class="modal">
+        <div class="modal-content">
+        <h3>Edit Product</h3>
+        <br />
   
-  <script>
-  export default {
-    data() {
+        <label>Name:</label>
+        <input type="text" v-model="editForm.name" />
+  
+        <label>Status:</label>
+        <select v-model="editForm.status">
+          <option value="Available">Available</option>
+          <option value="Disabled">Disabled</option>
+        </select>
+  
+        <label>Stock:</label>
+        <input type="number" v-model="editForm.stock" />
+  
+        <label>Price:</label>
+        <input type="number" v-model="editForm.price" />
+  
+        <label>Description:</label>
+        <textarea v-model="editForm.description"></textarea>
+  
+        <label>Quantity:</label>
+        <input type="number" v-model="editForm.quantity" />
+  
+        <label>Category:</label>
+        <select v-model="editForm.category">
+          <option>Fruits</option>
+          <option>Dairy</option>
+          <option>Vegitables</option>
+        </select>
+  
+        <div class="modal-buttons">
+          <button @click="updateProduct(editedProduct)">Save</button>
+          <button class="cancel-btn" @click="modalActive = false">Cancel</button>
+        </div>
+        
+        </div>
+      </div>
+      
+    </template>
+  
+    <script>
+  import axios from "axios";
+    import { mapActions, mapGetters } from "vuex";
+  
+    export default {
+      // name: "ProductTable",
+      data() {
       return {
-        products: [
-          {
-            id: 1,
-            name: "RAVENOL CVT Fluid 1 LT",
-            status: "Disabled",
-            stock: 12,
-            price: "8,000.00",
-            image: "https://via.placeholder.com/40"
-          },
-          {
-            id: 2,
-            name: "RAVENOL Longlife LSG SAE 5W-30 5 LTS",
-            status: "Available",
-            stock: 5,
-            price: "33,000.00",
-            image: "https://via.placeholder.com/40"
-          },
-          {
-            id: 3,
-            name: "RAVENOL VMP SAE 5W-30 1 LTS",
-            status: "Available",
-            stock: 15,
-            price: "7,500.00",
-            image: "https://via.placeholder.com/40"
-          },
-          {
-            id: 4,
-            name: "RAVENOL Formel Super SAE 15W-40 4 LTS",
-            status: "Available",
-            stock: 12,
-            price: "8,000.00",
-            image: "https://via.placeholder.com/40"
-          },
-          {
-            id: 5,
-            name: "RAVENOL VMP SAE 5W-30 208 LTS",
-            status: "Available",
-            stock: 0,
-            price: "150,000.00",
-            image: "https://via.placeholder.com/40"
-          }
-        ]
+        searchQuery: "",
+        selectedCategory: "",
+        modalActive: false,
+        addModalActive: false, // Ensure this is defined
+        newProduct: {
+        name: "",
+        status: "",
+        stock: "",
+        price: "0",
+        description:"",
+        quantity: "",
+        category: "",
+        image: null
+        },
+        editForm: {
+        name: "",
+        status: "",
+        stock: "",
+        price: "",
+        description: "",
+        quantity: "",
+        category: ""
+        },
+
       };
+      },
+      computed: {
+      ...mapGetters(["getAllProducts", "getCategories"]),
+      
+      // Filtered products based on search and category
+      filteredProducts() {
+        if (!this.getAllProducts) return [];
+  
+        return this.getAllProducts.filter((product) => {
+        if (!product || !product.title) return false;
+  
+        product.status = product.quantity > 0 ? "Available" : "NA";
+  
+        const matchesSearch = product.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const matchesCategory = this.selectedCategory ? product.category === this.selectedCategory : true;
+  
+        return matchesSearch && matchesCategory;
+        });
+      },
+  
+      categories() {
+        return this.getCategories || [];
+      },
+      },
+      methods: {
+      ...mapActions(["fetchAllProducts_admin", "fetchProductsByCategory_admin", "updateProduct", "deleteProduct", "addProduct"]),
+  
+      
+    openAddModal() {
+      this.addModalActive = true;
+      this.newProduct = { name: "", status: "Available", price: "", description: "", quantity: "", category: "", image: null };
+      console.log("clicked here");
     },
-    methods: {
-      getStatusClass(status) {
-        return status === "Available" ? "text-green-500" : "text-red-500";
+
+    async saveNewProduct() {
+      const formData = new FormData();
+      formData.append("title", this.newProduct.name);
+      formData.append("status", this.newProduct.status);
+      formData.append("price", this.newProduct.price);
+      formData.append("description", this.newProduct.description);
+      formData.append("quantity", this.newProduct.quantity);
+      formData.append("category", this.newProduct.category);
+      if (this.newProduct.image) {
+        formData.append("image", this.newProduct.image);
       }
-    }
+
+      try {
+        const token = localStorage.getItem("adminToken");
+        await axios.post("http://localhost:5004/api/products", formData, {
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+        });
+        this.fetchAllProducts_admin(); // Refresh products list
+        this.addModalActive = false;
+      } catch (error) {
+        console.error("Error adding product:", error.response?.data || error.message);
+      }
+    },
+    handleImageUpload(event) {
+      this.newProduct.image = event.target.files[0];
+    },
+  },
+
+      filterProducts() {
+        this.$store.dispatch("filterProducts", this.searchQuery);
+      },
+  
+      handleCategoryChange() {
+        if (this.selectedCategory) {
+        this.fetchProductsByCategory(this.selectedCategory);
+        } else {
+        this.fetchAllProducts_admin();
+        }
+      },
+  
+      async deleteProduct(productId) {
+      const confirmDelete = confirm("Are you sure you want to delete this product?");
+      if (confirmDelete) {
+        await this.$store.dispatch("deleteProduct", productId);
+      }
+    },
+    openEditModal(product) {
+      this.updateProduct = { ...product };
+      this.modalActive = true;
+      console.log(this.modalActive); 
+    },
+   async saveChanges() {
+      // Simulate saving changes (you can add Vuex action if needed)
+     await this.$store.dispatch("updateProduct", this.editForm)
+      .then(() => {
+        return fetch('http://localhost:5004/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.editForm)
+        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Updated Product:", data);
+        this.modalActive = false;
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error);
+      });
+    
+    },
+
+    async created() {
+    console.log("Checking stored tokens...");
+    
+    const ADMIN_TOKEN = process.env.VUE_APP_ADMIN_TOKEN;
+  //  console.log("ADMIN_TOKEN:", ADMIN_TOKEN);
+   localStorage.setItem("adminToken", ADMIN_TOKEN);
+   await this.fetchAllProducts_admin();
+   console.log("Products fetched:", this.getAllProducts);
+  },
   };
   </script>
   
   <style scoped>
-  /* Sidebar Styles */
-  .sidebar-item {
-    padding: 12px;
+  .container {
+    padding: 20px;
+    max-width: 900px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
+    background-color: #f8f9fa;
+  }
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .search-input, .category-filter {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  .action-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
   }
-  
-  .sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .sidebar-item.active {
-    font-weight: bold;
-    border-left: 4px solid yellow;
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Button Styles */
-  .btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: bold;
+  .add-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
+  }
+  .table-container {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  th {
+    background-color: #f1f1f1;
+  }
+  .empty-message {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 5px;
+  }
+  .modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 50px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
   }
   
-  .btn-primary {
-    background: #28a745;
+  .modal-content h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .modal-content label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+  }
+  
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .modal-content textarea {
+    resize: vertical;
+    height: 100px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .save-btn {
+    background-color: #28a745;
     color: white;
   }
   
-  .btn-primary:hover {
-    background: #218838;
+  .save-btn:hover {
+    background-color: #218838;
   }
   
-  .btn-secondary {
-    background: #f3f3f3;
-    color: black;
+  .cancel-btn {
+    background-color: #dc3545;
+    color: white;
   }
   
-  .btn-secondary:hover {
-    background: #e0e0e0;
+  .cancel-btn:hover {
+    background-color: #c82333;
   }
   
-  /* Input Field */
-  .input-field {
-    border: 1px solid #ddd;
-    padding: 8px;
-    border-radius: 4px;
-    flex: 1;
-  }
-  
-  /* Table Styles */
-  .table-header {
-    background: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  .table-row {
-    border-top: 1px solid #ddd;
-    transition: background 0.3s;
-  }
-  
-  .table-row:hover {
-    background: #f9f9f9;
-  }
-  
-  /* Product Image */
-  .product-image {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+  .modal-content input:focus,
+  .modal-content select:focus,
+  .modal-content textarea:focus {
+    border-color: #28a745;
+    outline: none;
   }
   </style>
-  

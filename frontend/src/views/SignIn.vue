@@ -13,7 +13,7 @@
     
         
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Email</label>
           <input type="email" id="username" v-model="username" placeholder="Enter your gmail" /> <br />
           <span v-if="errors.username" class="error">{{ errors.username }}</span>
         </div>
@@ -22,7 +22,7 @@
           <div class="password-container">
             <input type="password" id="password" v-model="password" placeholder="Enter your password" />
           
-          <button type="button" class="toggle-password" @click="togglePasswordVisibility">👁️</button>
+          <button type="button" class="toggle-password" @click="togglePasswordVisibility"></button>
           </div>
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
@@ -49,12 +49,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions([ 'setUserId']),
+    ...mapActions([ 'setEmail','setUserId']),
     validateForm() {
       this.errors = {};
 
-      if (!this.username) {
-        this.errors.username = 'Email is required.';
+      if (!this.email) {
+        this.errors.email = 'Email is required.';
       }
 
       if (!this.password) {
@@ -70,7 +70,7 @@ export default {
       try {
         // Send the login request to the auth service
         const response = await axios.post('http://localhost:5001/api/login/user', {
-          email: this.username,
+          email: this.email,
           password: this.password
         });
 
@@ -81,13 +81,14 @@ export default {
 
           // Save the username in the store
           this.setUserId(response.data.id);
-          // this.setUserName(response.data.name);
-          localStorage.setItem('userId', response.data.id);
+          this.setEmail(response.data.name);
+          // localStorage.setItem('userId', response.data.id);
            
           
 
           // Navigate to the dashboard
           this.$router.push('/dashboard');
+        // alert('Login successful');
         } else {
           this.errors.general = 'Invalid email or password.';
         }

@@ -4,12 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 
 export default createStore({
   state: {
-    userId: null,
     name: [],
+    id:[],
     products: [],
+    products_admin: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
     itemsInCart: [],
+    userId: null,
     orders: [],
   },
   mutations: {
@@ -24,6 +26,18 @@ export default createStore({
         image: `data:image/png;base64,${product.image}`,  
       }));
       state.filteredProducts = state.products;
+    },
+    SET_PRODUCTS_admin(state, products) {
+      state.products_admin = products.map((product) => ({
+        id: product.id,
+        title: product.name,
+        description: product.description,
+        price: product.price,
+        quantity: product.quantity,
+        category: product.category,
+        image: `data:image/png;base64,${product.image}`,  
+      }));
+      state.filteredProducts = state.products_admin;
     },
     SET_FILTERED_PRODUCTS(state, products) {
       state.filteredProducts = products;
@@ -55,8 +69,40 @@ export default createStore({
     SET_USER_ID(state, userId) {
       state.userId = userId;
     },
+    SET_Email(state, email) {
+      state.email = email;
+    },
+
+    ADD_PRODUCT(state, newProduct) {
+      state.products_admin.push({
+        id: newProduct.id,
+        title: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        quantity: newProduct.quantity,
+        category: newProduct.category,
+        image: `data:image/png;base64,${newProduct.image}`,
+      });
+    
+      state.filteredProducts = [...state.products_admin];
+    },
+
+    EDIT_PRODUCT(state, updatedProduct) {
+      const index = state.products_admin.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) {
+        state.products_admin[index] = { ...state.products_admin[index], ...updatedProduct };
+        state.filteredProducts = [...state.products_admin]; // Ensure filtered list updates
+      }
+      },
+  
+      
+      DELETE_PRODUCT(state, productId) {
+        state.products_admin = state.products_admin.filter(product => product.id !== productId);
+        state.filteredProducts = state.filteredProducts.filter(product => product.id !== productId);
+      }
 
   },
+
   actions: {
     async fetchAllProducts({ commit }) {
       try {
@@ -67,6 +113,19 @@ export default createStore({
           },
         });
         commit("SET_PRODUCTS", response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    },
+    async fetchAllProducts_admin({ commit }) {
+      try {
+        const response = await axios.get("http://localhost:5004/api/products", {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // Retrieve stored token
+          }
+        });
+        console.log("API Response:", response.data); 
+        commit("SET_PRODUCTS_admin", response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -82,6 +141,43 @@ export default createStore({
         commit("SET_PRODUCTS", response.data);
       } catch (error) {
         console.error("Error fetching products by category:", error);
+      }
+    },
+    async fetchProductsByCategory_admin({ commit }, category) {
+      try {
+        const response = await axios.get(`http://localhost:5004/api/products/category/${category}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // Retrieve stored token
+          }
+        });
+        commit("SET_PRODUCTS", response.data);
+      } catch (error) {
+        console.error("Error fetching products by category:", error);
+      }
+    },
+
+    async addProduct({ commit }, productData) {
+      try {
+        const formData = new FormData();
+        formData.append("name", productData.name);
+        formData.append("description", productData.description);
+        formData.append("price", productData.price);
+        formData.append("quantity", productData.quantity);
+        formData.append("category", productData.category);
+        formData.append("image", productData.image); // Image file
+    
+        const response = await axios.post("http://localhost:5004/api/products", formData, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+    
+        if (response.status === 201) {
+          commit("ADD_PRODUCT", response.data); // Update state
+        }
+      } catch (error) {
+        console.error("Error adding product:", error.response?.data || error.message);
       }
     },
     addToCart({ commit }, product) {
@@ -100,6 +196,10 @@ export default createStore({
     setUserId({ commit }, userId) {
       commit('SET_USER_ID', userId);
     },
+    setEmail({ commit }, email) {
+      commit('SET_USER_Email', email);
+    },
+
     async placeOrder({ commit, state }) {
       if (state.itemsInCart.length === 0) {
         alert("Your cart is empty!");
@@ -154,8 +254,39 @@ export default createStore({
       } catch (error) {
         console.error("Error fetching orders:", error.response?.data || error.message);
       }
-    }
-    
+    },
+
+    async updateProduct({ commit }, updatedProduct) {
+      try {
+        const response = await axios.put(
+          `http://localhost:5004/api/products/${updatedProduct.id}`,
+          updatedProduct,
+          {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+            }
+          }
+        );
+        if (response.status === 200) {
+          commit("EDIT_PRODUCT", response.data); // Update state
+        }
+      } catch (error) {
+        console.error("Error updating product:", error);
+      }
+    },
+    async deleteProduct({ commit }, productId) {
+      try {
+        await axios.delete(`http://localhost:5004/api/products/${productId}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+          }
+        });
+        commit("DELETE_PRODUCT", productId); // Remove from state after successful deletion
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    },
+
   },
   getters: {
     getAllProducts: (state) => state.filteredProducts,
@@ -164,6 +295,7 @@ export default createStore({
     getUserId: (state) => state.userId,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),
+    getEmail: (state) => state.email,
     getOrders: (state) => state.orders,
   },
 });
