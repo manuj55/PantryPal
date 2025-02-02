@@ -11,5 +11,4 @@ public class PaymentRequestDto {
 
     private String name;
     private Long amount;
-
 }
