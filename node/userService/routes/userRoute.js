@@ -1,10 +1,37 @@
 const express = require("express");
+const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+const dotenv = require("dotenv");
 const User = require("../models/user")
+const VerificationToken = require('../models/VerificationToken');
 
 const { verifyRole } = require("./auth/util");
 const { ROLES } = require("../consts");
 
 const router = express.Router();
+
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    service: 'Gmail',
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+    },
+});
+
+
+
+// Optionally verify the transporter
+transporter.verify((error, success) => {
+    if (error) {
+        console.error(error);
+    } else {
+        console.log('Server is ready to take our messages');
+    }
+});
 
 
 /**
@@ -67,6 +94,33 @@ router.post("/", async (req, res) => {
         })
 
         const savedUSer = await newUser.save();
+        const token = uuidv4();
+
+        const verificationToken = new VerificationToken({
+            userId: savedUSer._id,
+            token,
+        });
+        await verificationToken.save();
+
+        // Construct a verification URL. Replace 'yourdomain.com' with your actual domain.
+        const url = `http://localhost:5002/api/verify/${token}`;
+
+        // Email options
+        const mailOptions = {
+            from: process.env.GMAIL_USER,
+            to: savedUSer.email,
+            subject: 'Verify Your Email',
+            html: `<p>Please click the following link to verify your email:</p>
+         <a href="${url}">${url}</a>`,
+        };
+        // Send the verification email
+        try {
+            await transporter.sendMail(mailOptions);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Failed to send verification email" });
+        }
+
         res.status(201).json(savedUSer);
     }
     catch (error) {
