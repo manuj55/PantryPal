@@ -8,4 +8,4 @@ WORKDIR /app
 
 COPY target/payment-service.jar /app/payment-service.jar
 
-ENTRYPOINT ["java", "-jar", "product-service.jar"]
+ENTRYPOINT ["java", "-jar", "payment-service.jar"]
