@@ -38,8 +38,22 @@
           <span v-if="!isCollapsed">Profile</span>
         </router-link>
       </li>
+      <!-- <li>
+        <router-link to="/signin" class="logout-button" active-class="active">
+          <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+          <span v-if="!isCollapsed">Logout</span>
+        </router-link>
+      </li> -->
       </ul>
-    </div>
+       <!-- Logout Button (Fixed at Bottom) -->
+    <div class="logout-section">
+      <button class="logout-btn" @click="logout">
+        <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
+        <span v-if="!isCollapsed">Logout</span>
+      </button>
+   </div>
+  </div> 
+   
   </template>
   
   <script>
@@ -54,7 +68,16 @@
       toggleSidebar() {
         this.isCollapsed = !this.isCollapsed;
       },
+      logout() {
+      // Clear authentication details
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userId");
+
+      // Redirect to SignIn page
+      this.$router.push("/signin");
     },
+  },
+  
   };
   </script>
   
@@ -125,6 +148,9 @@
     font-size: 20px;
   }
   
+.logout-btn:hover {
+  background: #c82333;
+}
  
   @media (max-width: 1024px) {
     .sidebar {

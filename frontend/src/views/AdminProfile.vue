@@ -190,9 +190,9 @@
 
 async saveNewProduct() {
   try {
-    if (this.newProduct.imageFile) {
-      this.newProduct.image = await this.convertToBase64(this.newProduct.imageFile);
-    }
+    // if (this.newProduct.imageFile) {
+    //   this.newProduct.image = await this.convertToBase64(this.newProduct.imageFile);
+    // }
     const response = await fetch("http://localhost:5004/api/products", {
       method: "POST",
       headers: {
@@ -246,8 +246,14 @@ async saveNewProduct() {
     }
     },
     async created() {
-      await this.fetchAllProducts_admin();
-    }
+        console.log("Checking stored tokens...");
+    
+    const ADMIN_TOKEN = process.env.VUE_APP_ADMIN_TOKEN;
+  //  console.log("ADMIN_TOKEN:", ADMIN_TOKEN);
+   localStorage.setItem("adminToken", ADMIN_TOKEN);
+   await this.fetchAllProducts_admin();
+   console.log("Products fetched:", this.getAllProducts);
+  },
   };
   </script>
   
