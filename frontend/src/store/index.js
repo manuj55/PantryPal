@@ -4,15 +4,20 @@ import { v4 as uuidv4 } from "uuid";
 
 export default createStore({
   state: {
+    userId: localStorage.getItem("userId") || null,
+    name: localStorage.getItem("name"),
     name: [],
     id:[],
     products: [],
     products_admin: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
-    itemsInCart: [],
+    itemsInCart: JSON.parse(localStorage.getItem("cartItems")) || [],
     userId: null,
     orders: [],
+    orderSuccess: false,
+    loading: false,
+    paymentUrl: "",
   },
   mutations: {
     SET_PRODUCTS(state, products) {
@@ -62,6 +67,7 @@ export default createStore({
     },
     PLACE_ORDER(state) {
       state.itemsInCart = []; 
+      localStorage.removeItem("cartItems");
     },
     SET_ORDERS(state, orders) {
       state.orders = orders; 
@@ -69,6 +75,17 @@ export default createStore({
     SET_USER_ID(state, userId) {
       state.userId = userId;
     },
+    SET_NAME(state, name) {
+      state.name= name;
+    },
+
+    SET_LOADING(state, status) {
+      state.loading = status;
+    },
+    SET_ORDER_SUCCESS(state, status) {
+      state.orderSuccess = status;
+    },
+    
     SET_Email(state, email) {
       state.email = email;
     },
@@ -230,21 +247,21 @@ export default createStore({
         };
     
         console.log("Sending Order Data:", orderData);
-    
-        const response = await axios.post("http://localhost:5003/orders/", orderData, {
+        
+        const response = await axios.post(`http://localhost:5003/orders/${this.state.userId}`, orderData, {
           headers: { Authorization: `Bearer ${token}` },
         });
     
         if (response.status === 200) {
+
           commit("PLACE_ORDER");
-          alert("Order placed successfully!");
         }
       } catch (error) {
         console.error("Error placing order:", error.response?.data || error.message);
       }
     },
 
-    async fetchOrders({ commit }) {
+    async fetchOrders({ commit, state }) {
       try {
         const token = localStorage.getItem("authToken");  
         if (!token ) {
@@ -252,14 +269,89 @@ export default createStore({
           return;
         }
     
-        const response = await axios.get("http://localhost:5003/orders/", {
+        const response = await axios.get(`http://localhost:5003/orders/${state.userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-    
+
         commit("SET_ORDERS", response.data);
       } catch (error) {
         console.error("Error fetching orders:", error.response?.data || error.message);
       }
+    },
+
+    async processPayment({ commit }, { userId, name, amount }) {
+      commit("SET_LOADING", true);
+      commit("SET_ORDER_SUCCESS", false);
+
+      try {
+        const paymentData = {
+          user_id: userId,
+          name: name,
+          amount: amount,
+        };
+        const token = localStorage.getItem("authToken"); 
+        const response = await axios.post("http://localhost:5003/payment/", paymentData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.status !== 200) {
+          throw new Error(response.data.detail || "Payment failed");
+        }
+
+        console.log("Payment Success:", response.data);
+
+        // Store payment URL and redirect
+        commit("SET_PAYMENT_URL", response.data.paymentUrl);
+        localStorage.setItem("cartItems", JSON.stringify(this.state.itemsInCart));
+        // Redirect to the payment page
+        window.location.href = response.data.paymentUrl;
+
+
+      } catch (error) {
+        console.error("Error placing order:", error.message);
+        alert("Payment failed! Please try again.");
+      }
+
+      commit("SET_LOADING", false);
+    },
+
+    async paymentDetails({ commit }, { userId, name, amount,paymentstring}) {
+      commit("SET_PAYMENT_STATUS", "processing");
+      commit("SET_PAYMENT_ERROR", null);
+      const paymentData = {
+        userId: userId,
+        name: name,
+        amount: Math.round(amount),
+        paymentStatus:paymentstring,
+      };
+
+      try {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+          throw new Error("User is not authenticated.");
+        }
+
+        const response = await axios.post("http://localhost:5003/payment-details/", paymentData, {
+          headers: {
+            Authorization: `Bearer ${token}`}
+        });
+
+        console.log("Payment Successful:", response.data);
+
+        commit("SET_PAYMENT_STATUS", "success");
+        commit("SET_PAYMENT_RESPONSE", response.data);
+
+        // Redirect to success page
+        this.$router.push("/success");
+
+      } catch (error) {
+        console.error("Payment Error:", error.response?.data || error.message);
+        commit("SET_PAYMENT_STATUS", "failed");
+        commit("SET_PAYMENT_ERROR", error.response?.data || error.message);
+      }
+    },
+    
     },
 
     async updateProduct({ commit }, updatedProduct) {
@@ -300,10 +392,13 @@ export default createStore({
     getCartItems: (state) => state.itemsInCart,
     getUserId: (state) => state.userId,
     getUserName: (state) => state.name,
+    getUserName: (state) => state.name,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),
     getEmail: (state) => state.email,
     getOrders: (state) => state.orders,
+    isLoading: (state) => state.loading,
+    isOrderSuccess: (state) => state.orderSuccess,
   },
 });
  

@@ -1,4 +1,5 @@
-package com.pramukh.productservice.utils;
+package com.pramukh.paymentservice.utils;
+
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
@@ -17,7 +18,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter");
-
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/swagger-ui")) {
             chain.doFilter(request, response);
@@ -25,7 +25,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(request, response);
             return;
@@ -40,7 +39,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println("Header present");
         String token = header.substring(7);
         try {
-
             DecodedJWT jwt = JWTvalidator.validate(token);
             System.out.println(jwt);
             List<String> endpointRoles = getRoles(request);
@@ -76,18 +74,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         String endpoint = request.getRequestURI();
         System.out.println(endpoint);
         String method = request.getMethod();
-        if (endpoint.contains("/api/products") && method.equals("GET")) {
-            return List.of("admin", "user", "order_service");
-        }
-        if (endpoint.contains("/api/products") && method.equals("POST")) {
-            return List.of("admin");
-        }
 
-        if (endpoint.contains("/api/products") && method.equals("PUT")) {
-            return List.of("admin");
+        if (endpoint.contains("/api/payment") && method.equals("POST")) {
+            return List.of("order_service");
         }
-        if (endpoint.contains("/api/products") && method.equals("DELETE")) {
-            return List.of("admin");
+        if (endpoint.contains("/api/paymentDetails") && method.equals("POST")) {
+            return List.of("order_service");
         }
         return List.of("");
     }

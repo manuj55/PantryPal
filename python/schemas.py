@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 from typing import List
 
 
@@ -15,3 +15,15 @@ class OrderSchema(BaseModel):
     orderId: str
     userId: str  
     items: List[OrderItem]
+
+
+class PaymentRequest(BaseModel):
+    user_id: str
+    name: str
+    amount: float  
+    
+class PaymentDetails(BaseModel):
+    userId: str
+    name: str
+    amount: int # Large number support
+    paymentStatus: str

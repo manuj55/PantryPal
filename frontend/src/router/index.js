@@ -7,6 +7,7 @@ import BillingView from "../views/BillingView.vue";
 import OrdersView from "../views/OrdersView.vue"; 
 import AdminProfile from "@/views/AdminProfile.vue";
 
+import SuccessView from "../views/SuccessView.vue"
 const routes = [
   {
     path: "/",
@@ -26,6 +27,11 @@ const routes = [
     path: "/billing",
     name: "billing",
     component: BillingView,
+  },
+  {
+    path: "/success",
+    name: "success",
+    component: SuccessView,
   },
   {
     path: "/about",

@@ -62,9 +62,12 @@ export default {
         quantity: item.cartQuantity,
       }));
     },
+    totalAmount() {
+    return this.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  },
   },
   methods: {
-    ...mapActions(["removeFromCart", "updateCartQuantity", "placeOrder"]),
+    ...mapActions(["removeFromCart", "updateCartQuantity", "placeOrder","processPayment"]),
     removeProduct(index) {
       const product = this.cartItems[index];
       this.removeFromCart(product.id);
@@ -79,18 +82,15 @@ export default {
         this.updateCartQuantity({ id: product.id, quantity: product.quantity - 1 });
       }
     },
-    async buyNow() {
-      this.loading = true;
-      this.orderSuccess = false;
-
-      try {
-        await this.placeOrder();
-        this.orderSuccess = true;
-      } catch (error) {
-        console.error("Error placing order:", error);
+    buyNow() {
+      if (this.cartItems.length === 0) {
+        alert("Your cart is empty!");
+        return;
       }
 
-      this.loading = false;
+      const userId = localStorage.getItem("userId");
+      this.processPayment({ userId, name: "Grosify", amount: this.totalAmount*100 });
+
     },
   },
 };
