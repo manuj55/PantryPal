@@ -25,7 +25,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(request, response);
             return;
@@ -40,7 +39,6 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println("Header present");
         String token = header.substring(7);
         try {
-
             DecodedJWT jwt = JWTvalidator.validate(token);
             System.out.println(jwt);
             List<String> endpointRoles = getRoles(request);
@@ -49,12 +47,10 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 String[] userRoles = jwt.getClaim("roles").asArray(String.class);
                 System.out.println("userroles" + userRoles);
                 if (!userHasRequiredRole(endpointRoles, userRoles)) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                            "You are not authorized to access this endpoint");
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this endpoint");
                     return;
                 }
             }
-
             chain.doFilter(request, response);
             System.out.println("Filter completed execution.");
 
@@ -79,8 +75,11 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println(endpoint);
         String method = request.getMethod();
 
-        if (endpoint.contains("/api/payments") && method.equals("POST")) {
-            return List.of("user","order_service");
+        if (endpoint.contains("/api/payment") && method.equals("POST")) {
+            return List.of("order_service");
+        }
+        if (endpoint.contains("/api/paymentDetails") && method.equals("POST")) {
+            return List.of("order_service");
         }
         return List.of("");
     }
