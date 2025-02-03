@@ -39,7 +39,7 @@ public class PaymentController {
     @PostMapping("/paymentDetails")
     @RateLimiter(name = "paymentRateLimiter")
     @Operation(summary = "Add payment details")
-    public ResponseEntity<PayementDetailsResponseDTO> addPaymentDetails(@RequestBody PayementDetailsRequestDTO payementDetailsRequestDTO)  {
+    public ResponseEntity<PayementDetailsResponseDTO> addPaymentDetails(@RequestBody PayementDetailsRequestDTO payementDetailsRequestDTO) {
         PayementDetailsResponseDTO payementDetailsResponseDTO = paymentDetailsService.addPaymentDetails(payementDetailsRequestDTO);
         return new ResponseEntity<>(payementDetailsResponseDTO, HttpStatus.OK);
     }
