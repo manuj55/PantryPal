@@ -106,7 +106,8 @@
           <input type="number" v-model="editForm.price" />
   
           <label>Description:</label>
-          <textarea v-model="editForm.description"></textarea>
+          <textarea v-model="editForm.description" style="height: 200px; padding: 10px"></textarea>
+
   
           <label>Quantity:</label>
           <input type="number" v-model="editForm.quantity" />
@@ -221,6 +222,27 @@ await this.fetchAllProducts_admin();
     console.error("Error submitting product:", error);
   }
 },
+async deleteProduct(productId) {
+    if (confirm("Are you sure you want to delete this product?")) {
+        try {
+            const response = await fetch(`http://localhost:5004/api/products/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete product');
+            }
+
+            console.log("Product deleted successfully!");
+            await this.fetchAllProducts_admin();
+        } catch (error) {
+            console.error("Error deleting product:", error);
+        }
+    }
+},
 
       openEditModal(product) {
         this.editForm = { ...product };
@@ -273,25 +295,33 @@ await this.fetchAllProducts_admin();
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    max-width:120vw; /* Adjust as needed */
+    max-height: 140vh;
+    overflow: auto;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 100;
   }
   
   .modal-content {
     background: white;
+    background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    width: 500px;
-    height: 900px;
-    max-width: 90%;
+    width: 80vw;
+    height: 120vw;
+    max-height: 80vh;
+    overflow-y: auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+      margin: 30px auto;
+    
+      position: relative;
   }
-  
+ 
+
     .container {
       padding: 20px;
       max-width: 900px;
@@ -351,15 +381,7 @@ await this.fetchAllProducts_admin();
       display: flex;
       gap: 5px;
     }
-    .modal-content {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      max-width: 500px;
-      margin: 50px auto;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }
+   
     
     .modal-content h3 {
       font-size: 24px;
@@ -386,7 +408,7 @@ await this.fetchAllProducts_admin();
     
     .modal-content textarea {
       resize: vertical;
-      height: 100px;
+      height: auto;
     }
     
     .modal-buttons {
