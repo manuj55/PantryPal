@@ -183,26 +183,20 @@
   };
   console.log("Add Product Modal Opened");
 },
-handleImageUpload(event) {
-                    this.selectedFile = event.target.files[0];
+    handleImageUpload(event) {
+     this.selectedFile = event.target.files[0];
                 },
-async  saveNewProduct() {
-  try {
+    async  saveNewProduct() {
+    try {
     const formData = new FormData();
-
-    // If you have only one product, wrap it in an array
     const productList = [this.newProduct];
     const productJson = JSON.stringify(productList);
-
-    // Create a Blob with {type: 'application/json'}
     const productBlob = new Blob([productJson], { type: "application/json" });
 
-    // Append the blob. The third argument sets a filename, which is optional but recommended.
     formData.append("product", productBlob, "product.json");
-
-    // Append your image(s); if you have multiple images, loop over them
     formData.append("image", this.selectedFile);
 
+    this.addModalActive = false; // Close the modal
     const response = await fetch("http://localhost:5004/api/products", {
       method: "POST",
       headers: {
@@ -215,14 +209,18 @@ async  saveNewProduct() {
     if (!response.ok) {
       throw new Error(`Upload failed, status: ${response.status}`);
     }
+    console.log("Product added successfully!");
+
+// **Refresh product list automatically**
+await this.fetchAllProducts_admin();
+
 
     const data = await response.text();
     console.log("Upload success:", data);
   } catch (error) {
     console.error("Error submitting product:", error);
   }
-}
-    },
+},
 
       openEditModal(product) {
         this.editForm = { ...product };
@@ -233,6 +231,7 @@ async  saveNewProduct() {
   
     async saveChanges() {
       try {
+        this.modalActive = false;
         const response = await fetch(`http://localhost:5004/api/products/${this.editForm.id}`, {
         method: 'PUT',
         headers: {
@@ -241,18 +240,22 @@ async  saveNewProduct() {
         },
         body: JSON.stringify(this.editForm)
         });
+
         if (!response.ok) {
         throw new Error('Failed to update product');
         }
-        const updatedProduct = await response.json();
-        console.log("Updated Product:", updatedProduct);
-        this.modalActive = false;
+
+        // const updatedProduct = await response.json();
+        console.log("Updated Product:");
+      
         await this.fetchAllProducts_admin();
+        this.modalActive = false;
+
       } catch (error) {
         console.error("Error updating product:", error);
       }
     },
-    
+},
     async created() {
         console.log("Checking stored tokens...");
     
@@ -262,8 +265,7 @@ async  saveNewProduct() {
    await this.fetchAllProducts_admin();
    console.log("Products fetched:", this.getAllProducts);
   },
-
-  };
+};
   </script>
   
   <style scoped>

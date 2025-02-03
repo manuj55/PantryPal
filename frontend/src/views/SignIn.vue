@@ -27,7 +27,7 @@
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
         <a href="#" class="forgot-password">Forget password?</a> <br />
-        <button type="submit" class="login-button">Login</button>
+        <button type="submit" class="login-button" @click="submitForm">Login</button>
       
         <router-link to="/signup" class="signin-link" active-class="active">
            <p>Don't have an account? SignUp </p>  </router-link>
@@ -66,6 +66,7 @@ export default {
         this.submitForm();
       }
     },
+
     async submitForm() {
       try {
         // Send the login request to the auth service
