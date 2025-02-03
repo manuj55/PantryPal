@@ -45,13 +45,7 @@
         </router-link>
       </li>
       </ul>
-       <!-- Logout Button (Fixed at Bottom) -->
-    <!-- <div class="logout-section">
-      <button class="logout-btn" @click="logout">
-        <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
-        <span v-if="!isCollapsed">Logout</span>
-      </button>
-   </div>-->
+     
   </div>  
    
   </template>
@@ -71,6 +65,7 @@
       logout() {
       // Clear authentication details
       localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
       localStorage.removeItem("userId");
 
       // Redirect to SignIn page
