@@ -16,8 +16,13 @@ import java.util.List;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        System.out.println("Filter");
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/swagger-ui")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
 
