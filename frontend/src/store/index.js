@@ -6,14 +6,14 @@ export default createStore({
   state: {
     userId: localStorage.getItem("userId") || null,
     name: localStorage.getItem("name"),
-    name: [],
+  
     id:[],
     products: [],
     products_admin: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
     itemsInCart: JSON.parse(localStorage.getItem("cartItems")) || [],
-    userId: null,
+    
     orders: [],
     orderSuccess: false,
     loading: false,
@@ -392,7 +392,6 @@ export default createStore({
     getCategories: (state) => state.categories,
     getCartItems: (state) => state.itemsInCart,
     getUserId: (state) => state.userId,
-    getUserName: (state) => state.name,
     getUserName: (state) => state.name,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),

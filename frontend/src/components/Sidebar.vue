@@ -67,6 +67,9 @@
       localStorage.removeItem("authToken");
       localStorage.removeItem("adminToken");
       localStorage.removeItem("userId");
+      localStorage.removeItem("name");
+      // Clear Vuex store
+      this.$store.dispatch('logout');
 
       // Redirect to SignIn page
       this.$router.push("/signin");
