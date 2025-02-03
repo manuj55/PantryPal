@@ -15,11 +15,17 @@ import java.util.List;
 public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        System.out.println("Filter");
+
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/swagger-ui")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            // Let the preflight pass through with 200 OK
+
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(request, response);
             return;
@@ -43,12 +49,10 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 String[] userRoles = jwt.getClaim("roles").asArray(String.class);
                 System.out.println("userroles" + userRoles);
                 if (!userHasRequiredRole(endpointRoles, userRoles)) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                            "You are not authorized to access this endpoint");
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this endpoint");
                     return;
                 }
             }
-
             chain.doFilter(request, response);
             System.out.println("Filter completed execution.");
 
