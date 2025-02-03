@@ -39,7 +39,7 @@
         </router-link>
       </li>
       <li>
-        <router-link to="/signin" class="nav-item" active-class="active">
+        <router-link to="/signin" class="nav-item" active-class="active" @click="logout">
           <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
           <span v-if="!isCollapsed">Logout</span>
         </router-link>
