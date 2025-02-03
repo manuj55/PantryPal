@@ -241,7 +241,7 @@ export default createStore({
     async fetchOrders({ commit }) {
       try {
         const token = localStorage.getItem("authToken");  
-        if (!token || this.state.userId ) {
+        if (!token ) {
           console.error("No auth token found.");
           return;
         }
