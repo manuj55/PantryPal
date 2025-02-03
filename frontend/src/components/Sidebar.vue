@@ -38,21 +38,21 @@
           <span v-if="!isCollapsed">Profile</span>
         </router-link>
       </li>
-      <!-- <li>
-        <router-link to="/signin" class="logout-button" active-class="active">
+      <li>
+        <router-link to="/signin" class="nav-item" active-class="active">
           <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
           <span v-if="!isCollapsed">Logout</span>
         </router-link>
-      </li> -->
+      </li>
       </ul>
        <!-- Logout Button (Fixed at Bottom) -->
-    <div class="logout-section">
+    <!-- <div class="logout-section">
       <button class="logout-btn" @click="logout">
         <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
         <span v-if="!isCollapsed">Logout</span>
       </button>
-   </div>
-  </div> 
+   </div>-->
+  </div>  
    
   </template>
   

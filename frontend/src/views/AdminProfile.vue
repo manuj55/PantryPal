@@ -57,12 +57,6 @@
           <label>Name:</label>
           <input type="text" v-model="newProduct.name" />
   
-          <label>Status:</label>
-          <select v-model="newProduct.status">
-            <option value="Available">Available</option>
-            <option value="Disabled">Disabled</option>
-          </select>
-  
           <label>Price:</label>
           <input type="number" v-model="newProduct.price" />
   
@@ -80,7 +74,10 @@
           </select>
   
           <label>Image:</label>
-          <input type="file" @change="handleImageUpload" />
+        <input type="file" @change="handleImageUpload" />
+
+        
+           
   
           <div class="modal-buttons">
             <button @click="saveNewProduct">Save</button>
@@ -136,18 +133,18 @@
   export default {
     data() {
       return {
+        selectedFile: null,
         searchQuery: "",
         selectedCategory: "",
         modalActive: false,
         addModalActive: false,
         newProduct: {
           name: "",
-          status: "",
-          price: "0",
           description: "",
           quantity: "",
+          price: "0",
           category: "",
-          image: null
+         
         },
         editForm: {
           name: "",
@@ -178,43 +175,54 @@
   this.addModalActive = true;
   this.newProduct = {
     name: "",
-    status: "Available", // Default status
-    price: 0,
-    description: "",
-    quantity: 0,
-    category: "",
-    image: null
+          description: "",
+          quantity: "",
+          price: "0",
+          category: "",
+         
   };
   console.log("Add Product Modal Opened");
 },
-
-async saveNewProduct() {
+handleImageUpload(event) {
+                    this.selectedFile = event.target.files[0];
+                },
+async  saveNewProduct() {
   try {
-    // if (this.newProduct.imageFile) {
-    //   this.newProduct.image = await this.convertToBase64(this.newProduct.imageFile);
-    // }
+    const formData = new FormData();
+
+    // If you have only one product, wrap it in an array
+    const productList = [this.newProduct];
+    const productJson = JSON.stringify(productList);
+
+    // Create a Blob with {type: 'application/json'}
+    const productBlob = new Blob([productJson], { type: "application/json" });
+
+    // Append the blob. The third argument sets a filename, which is optional but recommended.
+    formData.append("product", productBlob, "product.json");
+
+    // Append your image(s); if you have multiple images, loop over them
+    formData.append("image", this.selectedFile);
+
     const response = await fetch("http://localhost:5004/api/products", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // Retrieve stored token
+        // Don't set Content-Type here; let the browser set multipart/form-data boundaries
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
       },
-      body: JSON.stringify(this.newProduct)
+      body: formData
     });
 
     if (!response.ok) {
-      throw new Error("Failed to add product");
+      throw new Error(`Upload failed, status: ${response.status}`);
     }
 
-    const addedProduct = await response.json();
-    console.log("Added Product:", addedProduct);
-    
-    this.addModalActive = false; // Close modal after successful addition
-    await this.fetchAllProducts_admin(); // Refresh the product list
+    const data = await response.text();
+    console.log("Upload success:", data);
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("Error submitting product:", error);
   }
-},
+}
+    },
 
       openEditModal(product) {
         this.editForm = { ...product };
@@ -243,8 +251,8 @@ async saveNewProduct() {
       } catch (error) {
         console.error("Error updating product:", error);
       }
-    }
     },
+    
     async created() {
         console.log("Checking stored tokens...");
     
@@ -254,6 +262,7 @@ async saveNewProduct() {
    await this.fetchAllProducts_admin();
    console.log("Products fetched:", this.getAllProducts);
   },
+
   };
   </script>
   
@@ -275,7 +284,7 @@ async saveNewProduct() {
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 400px;
+    width: 500px;
     height: 900px;
     max-width: 90%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
