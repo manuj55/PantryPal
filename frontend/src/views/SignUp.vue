@@ -29,7 +29,7 @@
           </div>
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
-        <button type="submit" class="register-button">Register</button>
+        <button type="submit" class="register-button" @click="registered">Register</button>
         <!-- <p class="signup-link"> Do you already have an account? <a href="/signin">Sign In</a></p> -->
         <router-link to="/signin" class="SignIn-link" active-class="active">
           <p>Do you already have an account? SignIn </p>
@@ -68,6 +68,11 @@ export default {
       if (Object.keys(this.errors).length === 0) {
         this.handleSubmit();
       }
+    },
+
+    registered
+    () {
+      alert('Registered successfully!');
     },
     async handleSubmit() {
       try {
