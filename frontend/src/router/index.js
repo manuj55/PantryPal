@@ -5,7 +5,7 @@ import DashBoardView from "../views/DashBoard.vue";
 import CartView from "../views/Cart.vue";  
 import BillingView from "../views/BillingView.vue";  
 import OrdersView from "../views/OrdersView.vue"; 
-
+import SuccessView from "../views/SuccessView.vue"
 const routes = [
   {
     path: "/",
@@ -25,6 +25,11 @@ const routes = [
     path: "/billing",
     name: "billing",
     component: BillingView,
+  },
+  {
+    path: "/success",
+    name: "success",
+    component: SuccessView,
   },
   {
     path: "/about",

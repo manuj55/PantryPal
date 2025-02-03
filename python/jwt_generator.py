@@ -30,7 +30,7 @@ def generate_jwt(user_id: str):
         # **JWT Payload**
         payload = {
             "id": user_id,
-            "roles": ["user"],
+            "roles": ["order_service"],
             "iat": int(datetime.utcnow().timestamp()),  # Issued At
             "exp": int((datetime.utcnow() + timedelta(days=180)).timestamp())  # Expiry
         }

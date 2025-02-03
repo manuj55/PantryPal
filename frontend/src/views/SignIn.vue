@@ -29,6 +29,7 @@
         <a href="#" class="forgot-password">Forget password?</a> <br />
         <button type="submit" class="login-button">Login</button>
       
+        <!-- <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p> -->
         <router-link to="/signup" class="signin-link" active-class="active">
            <p>Don't have an account? SignUp </p>  </router-link>
       </form>
@@ -43,13 +44,14 @@ import { mapActions } from 'vuex';
 export default {
   data() {
     return {
-      email: '', 
+      email: '', // Updated to match the API's "email" field
       password: '',
-      errors: {}
+      errors: {},
+      username:""
     };
   },
   methods: {
-    ...mapActions([ 'setUserId']),
+    ...mapActions(['setUserName','setUserId']),
     validateForm() {
       this.errors = {};
 
@@ -77,14 +79,13 @@ export default {
         if (response.data.access_token) {
           // Save the token (optional: use localStorage or Vuex)
           localStorage.setItem('authToken', response.data.access_token);
-          console.log(response.data);
-
-          // Save the username in the store
-          this.setUserId(response.data.id);
-          // this.setUserName(response.data.name);
-          localStorage.setItem('userId', response.data.id);
-           
           
+          this.setUserId(response.data.id);
+          localStorage.setItem("userId",response.data.id);
+          this.setUserName(response.data.name);
+          localStorage.setItem("name",response.data.name);
+          
+
 
           // Navigate to the dashboard
           this.$router.push('/dashboard');
