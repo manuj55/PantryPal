@@ -13,7 +13,7 @@
     
         
         <div class="form-group">
-          <label for="username">Email</label>
+          <label for="username">Username</label>
           <input type="email" id="username" v-model="username" placeholder="Enter your gmail" /> <br />
           <span v-if="errors.username" class="error">{{ errors.username }}</span>
         </div>
@@ -22,13 +22,14 @@
           <div class="password-container">
             <input type="password" id="password" v-model="password" placeholder="Enter your password" />
           
-          <button type="button" class="toggle-password" @click="togglePasswordVisibility"></button>
+          <button type="button" class="toggle-password" @click="togglePasswordVisibility">👁️</button>
           </div>
           <span v-if="errors.password" class="error">{{ errors.password }}</span>
         </div>
         <a href="#" class="forgot-password">Forget password?</a> <br />
-        <button type="submit" class="login-button" @click="submitForm">Login</button>
+        <button type="submit" class="login-button">Login</button>
       
+        <!-- <p class="signup-link"> Don't have an account? <a href="/signup">Sign Up</a></p> -->
         <router-link to="/signup" class="signin-link" active-class="active">
            <p>Don't have an account? SignUp </p>  </router-link>
       </form>
@@ -43,18 +44,19 @@ import { mapActions } from 'vuex';
 export default {
   data() {
     return {
-      email: '', 
+      email: '', // Updated to match the API's "email" field
       password: '',
-      errors: {}
+      errors: {},
+      username:""
     };
   },
   methods: {
-    ...mapActions([ 'setEmail','setUserId']),
+    ...mapActions(['setUserName','setUserId']),
     validateForm() {
       this.errors = {};
 
-      if (!this.email) {
-        this.errors.email = 'Email is required.';
+      if (!this.username) {
+        this.errors.username = 'Email is required.';
       }
 
       if (!this.password) {
@@ -66,30 +68,27 @@ export default {
         this.submitForm();
       }
     },
-
     async submitForm() {
       try {
         // Send the login request to the auth service
         const response = await axios.post('http://localhost:5001/api/login/user', {
-          email: this.email,
+          email: this.username,
           password: this.password
         });
 
         if (response.data.access_token) {
           // Save the token (optional: use localStorage or Vuex)
           localStorage.setItem('authToken', response.data.access_token);
-          console.log(response.data);
-
-          // Save the username in the store
-          this.setUserId(response.data.id);
-          this.setEmail(response.data.name);
-          // localStorage.setItem('userId', response.data.id);
-           
           
+          this.setUserId(response.data.id);
+          localStorage.setItem("userId",response.data.id);
+          this.setUserName(response.data.name);
+          localStorage.setItem("name",response.data.name);
+          
+
 
           // Navigate to the dashboard
           this.$router.push('/dashboard');
-        // alert('Login successful');
         } else {
           this.errors.general = 'Invalid email or password.';
         }

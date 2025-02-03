@@ -72,6 +72,9 @@ export default createStore({
     SET_Email(state, email) {
       state.email = email;
     },
+    SET_UserName(state, name) {
+      state.name = name;
+    },
 
     ADD_PRODUCT(state, newProduct) {
       state.products_admin.push({
@@ -199,6 +202,9 @@ export default createStore({
     setEmail({ commit }, email) {
       commit('SET_USER_Email', email);
     },
+    setUserName({ commit }, name) {
+      commit('SET_UserName', name);
+    },
 
     async placeOrder({ commit, state }) {
       if (state.itemsInCart.length === 0) {
@@ -293,6 +299,7 @@ export default createStore({
     getCategories: (state) => state.categories,
     getCartItems: (state) => state.itemsInCart,
     getUserId: (state) => state.userId,
+    getUserName: (state) => state.name,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),
     getEmail: (state) => state.email,
