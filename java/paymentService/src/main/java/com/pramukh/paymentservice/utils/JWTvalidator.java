@@ -19,7 +19,7 @@ public class JWTvalidator {
         System.out.println("Entered Validator");
         try {
             DecodedJWT jwt = JWT.decode(token);
-            System.out.println(jwt);
+
             String jku = jwt.getHeaderClaim("jku").asString();
             String kid = jwt.getKeyId();
             String alg = jwt.getAlgorithm();
@@ -33,12 +33,9 @@ public class JWTvalidator {
             if (!alg.equals("RS256")) {
                 throw new Exception("Invalid algorithm");
             }
-            System.out.println("before fetchKeys" + jku);
             JsonNode keys = fetchKeys(jku);
-            System.out.println(keys);
+            //Verify the token
             RSAPublicKey publicKey = getPublicKeyPem(keys, kid);
-            System.out.println(publicKey);
-
             Algorithm algorithm = Algorithm.RSA256(publicKey, null);
             JWTVerifier verifier = JWT.require(algorithm).build();
             verifier.verify(jwt);
@@ -49,6 +46,7 @@ public class JWTvalidator {
         }
     }
 
+    // Get the public key from the keys fetched from the jku endpoint
     private static RSAPublicKey getPublicKeyPem(JsonNode keys, String kid) throws Exception {
         for (JsonNode key : keys) {
             if (kid.equals(key.get("kid").asText())) {
@@ -69,19 +67,19 @@ public class JWTvalidator {
         throw new Exception("Unable to find a signing key that matches the 'kid'");
     }
 
+    // Fetch the keys from the jku endpoint
     private static JsonNode fetchKeys(String jku) throws Exception {
-        System.out.println("Entered fetchKeys before fetch keys");
-       RestTemplate restTemplate = new RestTemplate();
-        System.out.println("before passing it to restTemplate");
+
+        RestTemplate restTemplate = new RestTemplate();
+
         try {
             String keys = restTemplate.getForObject(jku, String.class);
-            System.out.println("keys" + keys);
-            System.out.println("keys"+keys);
+
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(keys);
             return jsonNode.get("keys");
         } catch (Exception e) {
-            System.err.println("Error fetching keys from " + jku);
+
             throw new Exception("Failed to fetch keys", e);
         }
 

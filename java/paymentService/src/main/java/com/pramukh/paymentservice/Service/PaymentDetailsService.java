@@ -12,6 +12,7 @@ public class PaymentDetailsService {
     @Autowired
     private PaymentRepo paymentRepository;
 
+    // Add payment details to DB
     public PayementDetailsResponseDTO addPaymentDetails(PayementDetailsRequestDTO payementDetailsRequestDTO) {
         PaymentEntity payment = PaymentEntity.builder()
                 .userId(payementDetailsRequestDTO.getUserId())
