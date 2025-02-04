@@ -25,6 +25,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    // Add products
     @PostMapping(value = "/products", consumes = "multipart/form-data")
     @Operation(summary = "Add products")
     @RateLimiter(name = "productRateLimiter")
@@ -33,6 +34,7 @@ public class ProductController {
         return new ResponseEntity<>("Product added successfully", HttpStatus.OK);
     }
 
+    // Get all products
     @GetMapping("/products")
     @Operation(summary = "Get all products")
     @RateLimiter(name = "productRateLimiter")
@@ -41,6 +43,7 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    // Get products by category
     @GetMapping("/products/category/{category}")
     @Operation(summary = "Get products by category")
     @RateLimiter(name = "productRateLimiter")
@@ -49,6 +52,7 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    // Get products by name
     @GetMapping("/products/{name}")
     @Operation(summary = "Get products by name")
     @RateLimiter(name = "productRateLimiter")
@@ -57,15 +61,16 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    // Delete product by id
     @DeleteMapping("/products/{id}")
     @Operation(summary = "Delete product by id")
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<String> deleteProduct(@PathVariable String id) {
-        System.out.println("Entered delete product controller");
         productService.deleteProduct(id);
         return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
     }
 
+    // Update product by id
     @PutMapping("/products/{id}")
     @Operation(summary = "Update product by id")
     @RateLimiter(name = "productRateLimiter")

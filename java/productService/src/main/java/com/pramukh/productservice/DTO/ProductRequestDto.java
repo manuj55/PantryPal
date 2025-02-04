@@ -2,6 +2,7 @@ package com.pramukh.productservice.DTO;
 
 import lombok.Data;
 
+// DTO for Product Request
 @Data
 public class ProductRequestDto {
     private String name;

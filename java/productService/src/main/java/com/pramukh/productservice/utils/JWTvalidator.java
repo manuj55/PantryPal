@@ -17,6 +17,7 @@ public class JWTvalidator {
     public static DecodedJWT validate(String token) throws Exception {
         System.out.println("Entered Validator");
         try {
+            // Decode the token
             DecodedJWT jwt = JWT.decode(token);
             System.out.println(jwt);
             String jku = jwt.getHeaderClaim("jku").asString();
@@ -26,18 +27,18 @@ public class JWTvalidator {
             System.out.println(kid);
             System.out.println(alg);
 
+            // Check if the token has the required fields
             if (jku == null || kid == null) {
                 throw new Exception("Invalid token");
             }
             if (!alg.equals("RS256")) {
                 throw new Exception("Invalid algorithm");
             }
-            System.out.println("before fetchKeys" + jku);
+            // Fetch the keys from the jku endpoint
             JsonNode keys = fetchKeys(jku);
             System.out.println(keys);
             RSAPublicKey publicKey = getPublicKeyPem(keys, kid);
-            System.out.println(publicKey);
-
+            // Verify the token
             Algorithm algorithm = Algorithm.RSA256(publicKey, null);
             JWTVerifier verifier = JWT.require(algorithm).build();
             verifier.verify(jwt);
@@ -48,6 +49,7 @@ public class JWTvalidator {
         }
     }
 
+    // Get the public key from the keys fetched from the jku endpoint
     private static RSAPublicKey getPublicKeyPem(JsonNode keys, String kid) throws Exception {
         for (JsonNode key : keys) {
             if (kid.equals(key.get("kid").asText())) {
@@ -68,6 +70,7 @@ public class JWTvalidator {
         throw new Exception("Unable to find a signing key that matches the 'kid'");
     }
 
+    // Fetch the keys from the jku endpoint
     private static JsonNode fetchKeys(String jku) throws Exception {
         System.out.println("Entered fetchKeys before fetch keys");
        RestTemplate restTemplate = new RestTemplate();
