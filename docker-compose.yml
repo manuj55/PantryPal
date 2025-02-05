@@ -15,5 +15,23 @@ services:
     networks:
       - app-network
 
+  productservice:
+    build: ./java/productService
+    ports:
+      - "5004:5004"
+    depends_on:
+      - authservice
+    networks:
+      - app-network
+
+  paymentservice:
+    build: ./java/paymentService
+    ports:
+      - "5005:5005"
+    depends_on:
+      - authservice
+    networks:
+      - app-network
+
 networks:
   app-network:
