@@ -65,6 +65,14 @@ function verifyRole(requiredRoles) {
   }
 }
 
+function restrictUserToOwnData(req, res, next) {
+  if (req.user?.roles?.includes(ROLES.USER) && req.user.id !== req.params.id) {
+    return res.status(403).json({ message: "Access Forbidden: Student can only access their own data" });
+  }
+  next();
+}
+
 module.exports = {
   verifyRole,
+  restrictUserToOwnData,
 };

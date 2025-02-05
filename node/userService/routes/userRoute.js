@@ -6,7 +6,7 @@ const { userServiceLogger: logger } = require("../../logging");
 const User = require("../models/user")
 const VerificationToken = require('../models/VerificationToken');
 
-const { verifyRole } = require("./auth/util");
+const { verifyRole, restrictUserToOwnData } = require("./auth/util");
 const { ROLES } = require("../consts");
 
 const router = express.Router();
@@ -176,7 +176,7 @@ router.get("/", verifyRole([ROLES.ADMIN, ROLES.AUTH_SERVICE]), async (req, res) 
  *         description: Internal Server Error
  */
 //get user by id
-router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), async (req, res) => {
+router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), restrictUserToOwnData, async (req, res) => {
     logger.info(`GET /api/users/${req.params.id} called`);
     try {
         const userByID = await User.findById(req.params.id);
@@ -249,7 +249,7 @@ router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), restrictUserToOwnData, async (req, res) => {
     logger.info(`PUT /api/users/${req.params.id} called`);
     try {
         const { email, password } = req.body;
@@ -300,7 +300,7 @@ router.put("/:id", async (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyRole([ROLES.ADMIN]), async (req, res) => {
     logger.info(`DELETE /api/users/${req.params.id} called`);
     try {
         const user = await User.findByIdAndDelete(req.params.id);
