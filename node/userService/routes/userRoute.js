@@ -2,6 +2,7 @@ const express = require("express");
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
+const { userServiceLogger: logger } = require("../../../logging");
 const User = require("../models/user")
 const VerificationToken = require('../models/VerificationToken');
 
@@ -25,14 +26,13 @@ const transporter = nodemailer.createTransport({
 
 
 // Optionally verify the transporter
-transporter.verify((error, success) => {
+transporter.verify((error) => {
     if (error) {
-        console.error(error);
+        logger.error(`Nodemailer transporter error: ${error}`);
     } else {
-        console.log('Server is ready to take our messages');
+        logger.info('Server is ready to take our messages');
     }
 });
-
 
 /**
          * POST Methods
@@ -74,60 +74,54 @@ transporter.verify((error, success) => {
          */
 //create user 
 router.post("/", async (req, res) => {
+    logger.info("POST /api/user/register called");
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).json({ msg: "Please provide all fields" })
+        logger.warn("Missing fields: name, email, or password");
+        return res.status(400).json({ msg: "Please provide all fields" });
     }
 
     try {
-        const exisitingUser = await User.findOne({ email })
+        const exisitingUser = await User.findOne({ email });
         if (exisitingUser) {
-            return res.status(400).json({ msg: "User already exists" })
+            logger.warn(`User already exists with email: ${email}`);
+            return res.status(400).json({ msg: "User already exists" });
         }
 
-        //Create a new user 
-        const newUser = new User({
-            name,
-            email,
-            password
-        })
-
+        const newUser = new User({ name, email, password });
         const savedUSer = await newUser.save();
-        const token = uuidv4();
+        logger.info(`User created with ID: ${savedUSer._id}`);
 
+        const token = uuidv4();
         const verificationToken = new VerificationToken({
             userId: savedUSer._id,
             token,
         });
         await verificationToken.save();
 
-        // Construct a verification URL. Replace 'yourdomain.com' with your actual domain.
         const url = `http://localhost:5002/api/verify/${token}`;
-
-        // Email options
         const mailOptions = {
             from: process.env.GMAIL_USER,
             to: savedUSer.email,
             subject: 'Verify Your Email',
             html: `<p>Please click the following link to verify your email:</p>
-         <a href="${url}">${url}</a>`,
+                   <a href="${url}">${url}</a>`,
         };
-        // Send the verification email
         try {
             await transporter.sendMail(mailOptions);
+            logger.info(`Verification email sent to: ${savedUSer.email}`);
         } catch (error) {
-            console.error(error);
+            logger.error(`Failed to send verification email: ${error.message}`);
             return res.status(500).json({ error: "Failed to send verification email" });
         }
 
         res.status(201).json(savedUSer);
+    } catch (error) {
+        logger.error(`Error creating user: ${error.message}`);
+        return res.status(500).json({ error: error.message });
     }
-    catch (error) {
-        return res.status(500).json({ error: error.message })
-    }
-
-})
+});
 
 
 /**
@@ -146,16 +140,16 @@ router.post("/", async (req, res) => {
  */
 //get user 
 router.get("/", verifyRole([ROLES.ADMIN, ROLES.AUTH_SERVICE]), async (req, res) => {
+    logger.info("GET /api/users called");
     try {
         const user = await User.find();
+        logger.info("Users retrieved successfully");
         res.status(200).json(user);
+    } catch (error) {
+        logger.error(`GET /api/users error: ${error.message}`);
+        return res.status(500).json({ error: error.message });
     }
-    catch (error) {
-        return res.status(500).json({
-            error: error.message
-        })
-    }
-})
+});
 
 /**
  * GET user by id
@@ -183,13 +177,17 @@ router.get("/", verifyRole([ROLES.ADMIN, ROLES.AUTH_SERVICE]), async (req, res) 
  */
 //get user by id
 router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), async (req, res) => {
+    logger.info(`GET /api/users/${req.params.id} called`);
     try {
         const userByID = await User.findById(req.params.id);
         if (!userByID) {
+            logger.warn(`User not found with id: ${req.params.id}`);
             return res.status(404).json({ msg: "User not found" });
         }
+        logger.info(`User with id ${req.params.id} retrieved successfully`);
         res.status(200).json(userByID);
     } catch (error) {
+        logger.error(`GET /api/users/:id error: ${error.message}`);
         return res.status(500).json({ error: error.message });
     }
 });
@@ -252,24 +250,68 @@ router.get("/:id", verifyRole([ROLES.ADMIN, ROLES.USER]), async (req, res) => {
  *         description: Server error
  */
 router.put("/:id", async (req, res) => {
+    logger.info(`PUT /api/users/${req.params.id} called`);
     try {
         const { email, password } = req.body;
         if (email) {
             const existingUser = await User.findOne({ email });
             if (existingUser && existingUser._id.toString() !== req.params.id) {
+                logger.warn(`Email ${email} is already used by another user.`);
                 return res.status(400).json({ msg: "Email is already used by other user" });
             }
         }
         if (password) {
+            logger.warn("Attempted to change password");
             return res.status(400).json({ msg: "Password cannot be changed" });
         }
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedUser) {
+            logger.warn(`User not found with id: ${req.params.id}`);
             return res.status(404).json({ msg: "User not found" });
         }
-
+        logger.info(`User with id ${req.params.id} updated successfully`);
         return res.status(200).json(updatedUser);
     } catch (error) {
+        logger.error(`PUT /api/users/:id error: ${error.message}`);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Delete a user
+ *     description: Removes a user from the system by their unique ID.
+ *     tags:
+ *       - User Controller
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.delete("/:id", async (req, res) => {
+    logger.info(`DELETE /api/users/${req.params.id} called`);
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) {
+            logger.warn(`User not found with id: ${req.params.id}`);
+            return res.status(404).json({ msg: "User not found" });
+        }
+        logger.info(`User with id ${req.params.id} deleted successfully`);
+        res.status(200).json(user);
+    } catch (error) {
+        logger.error(`DELETE /api/users/:id error: ${error.message}`);
         return res.status(500).json({ error: error.message });
     }
 });
