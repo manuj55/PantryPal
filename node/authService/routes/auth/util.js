@@ -8,7 +8,7 @@ const {
   AUTH_SERVICE_JKU,
   ROLES,
 } = require("../../consts");
-const { getCorrelationId } = require("../../../correlationId");
+const { getCorrelationId } = require("../../correlationId");
 
 dotenv.config();
 

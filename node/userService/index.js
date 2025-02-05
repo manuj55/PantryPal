@@ -6,7 +6,7 @@ const cors = require("cors");
 const connectDB = require("./config/db.js")
 const userRoute = require("./routes/userRoute")
 const verifyRoute = require("./routes/verifyRoute.js")
-const { correlationIdMiddleware } = require("../correlationId.js");
+const { correlationIdMiddleware } = require("./correlationId.js");
 const swaggerDocs = require('./swagger.js')
 
 
