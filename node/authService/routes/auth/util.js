@@ -8,8 +8,20 @@ const {
   AUTH_SERVICE_JKU,
   ROLES,
 } = require("../../consts");
+const { getCorrelationId } = require("../../../correlationId");
 
 dotenv.config();
+
+const axiosInstance = axios.create();
+
+axiosInstance.interceptors.request.use(
+  (req) => {
+    const correlationId = getCorrelationId();
+    req.headers["x-correlation-id"] = correlationId;
+    return req;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Path to your private and public keys
 const privateKey = fs.readFileSync(
@@ -46,8 +58,7 @@ async function fetchUsers() {
     id: ROLES.AUTH_SERVICE,
     roles: [ROLES.AUTH_SERVICE],
   });
-  console.log("Docker token", token, "Docker user service", `${USER_SERVICES}`);
-  const response = await axios.get(`${USER_SERVICES}`, {
+  const response = await axiosInstance.get(`${USER_SERVICES}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
