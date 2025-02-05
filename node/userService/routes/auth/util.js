@@ -23,6 +23,13 @@ function getPublicKeyFromJWKS(kid, keys) {
 async function verifyJWTWithJWKS(token) {
   const decodedToken = jwt.decode(token, { complete: true }).header;
   const { jku, kid, alg } = decodedToken;
+  // verify jku is coming from the same domain as the request
+  // const allowedDomain = process.env.ALLOWED_DOMAIN || "example.com";
+  // const jkuUrlObj = new URL(jku);
+  // if (jkuUrlObj.hostname !== allowedDomain) {
+  //   throw new Error("Invalid jku: domain mismatch");
+  // }
+
   if (!kid || !jku) {
     throw new Error("JWT header is missing 'kid' or 'jku'");
   }
