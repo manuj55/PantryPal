@@ -1,0 +1,55 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+  authservice:
+    build: ./node/authService
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+
+  userservice:
+    build: ./node/userservice
+    ports:
+      - "5002:5002"
+    depends_on:
+      - authservice
+    networks:
+      - app-network
+
+
+  orderservice:
+    build: ./python  
+    ports:
+      - "5003:5003"
+    depends_on:
+      - productservice
+    networks:
+      - app-network
+
+
+  productservice:
+    build: ./java/productService
+    ports:
+      - "5004:5004"
+    depends_on:
+      - userservice
+    networks:
+      - app-network
+
+  paymentservice:
+    build: ./java/paymentService
+    ports:
+      - "5005:5005"
+    depends_on:
+      - orderservice
+    networks:
+      - app-network
+
+networks:
+  app-network:
+

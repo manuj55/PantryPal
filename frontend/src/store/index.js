@@ -10,6 +10,7 @@ export default createStore({
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
     itemsInCart: JSON.parse(localStorage.getItem("cartItems")) || [],
+    paymentStatus:[],
     orders: [],
     orderSuccess: false,
     loading: false,
@@ -70,8 +71,47 @@ export default createStore({
       state.orderSuccess = status;
     },
     
+    SET_Email(state, email) {
+      state.email = email;
+    },
+    SET_UserName(state, name) {
+      state.name = name;
+    },
+
+    ADD_PRODUCT(state, newProduct) {
+      state.products_admin.push({
+        id: newProduct.id,
+        title: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        quantity: newProduct.quantity,
+        category: newProduct.category,
+        image: `data:image/png;base64,${newProduct.image}`,
+      });
+    
+      state.filteredProducts = [...state.products_admin];
+    },
+
+    EDIT_PRODUCT(state, updatedProduct) {
+      const index = state.products_admin.findIndex((p) => p.id === updatedProduct.id);
+      if (index !== -1) {
+        state.products_admin[index] = { ...state.products_admin[index], ...updatedProduct };
+        state.filteredProducts = [...state.products_admin]; // Ensure filtered list updates
+      }
+      },
+  
+      
+      DELETE_PRODUCT(state, productId) {
+        state.products_admin = state.products_admin.filter(product => product.id !== productId);
+        state.filteredProducts = state.filteredProducts.filter(product => product.id !== productId);
+      },
+
+      SET_PAYMENT_STATUS(state, status) {
+        state.paymentStatus = status;
+      },
 
   },
+
   actions: {
     async fetchAllProducts({ commit }) {
       try {
@@ -212,7 +252,7 @@ export default createStore({
 
     async paymentDetails({ commit }, { userId, name, amount,paymentstring}) {
       commit("SET_PAYMENT_STATUS", "processing");
-      commit("SET_PAYMENT_ERROR", null);
+      //commit("SET_PAYMENT_ERROR", null);
       const paymentData = {
         userId: userId,
         name: name,
@@ -235,18 +275,50 @@ export default createStore({
         console.log("Payment Successful:", response.data);
 
         commit("SET_PAYMENT_STATUS", "success");
-        commit("SET_PAYMENT_RESPONSE", response.data);
+        //commit("SET_PAYMENT_RESPONSE", response.data);
 
         // Redirect to success page
         this.$router.push("/success");
 
       } catch (error) {
-        console.error("Payment Error:", error.response?.data || error.message);
+        //console.error("Payment Error:", error.response?.data || error.message);
         commit("SET_PAYMENT_STATUS", "failed");
-        commit("SET_PAYMENT_ERROR", error.response?.data || error.message);
+        //commit("SET_PAYMENT_ERROR", error.response?.data || error.message);
       }
     },
     
+
+    async updateProduct({ commit }, updatedProduct) {
+      try {
+        const response = await axios.put(
+          `http://localhost:5004/api/products/${updatedProduct.id}`,
+          updatedProduct,
+          {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+            }
+          }
+        );
+        if (response.status === 200) {
+          commit("EDIT_PRODUCT", response.data); // Update state
+        }
+      } catch (error) {
+        console.error("Error updating product:", error);
+      }
+    },
+    async deleteProduct({ commit }, productId) {
+      try {
+        await axios.delete(`http://localhost:5004/api/products/${productId}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
+          }
+        });
+        commit("DELETE_PRODUCT", productId); // Remove from state after successful deletion
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    },
+
   },
   getters: {
     getAllProducts: (state) => state.filteredProducts,

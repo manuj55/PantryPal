@@ -1,11 +1,11 @@
 <template>
-  <div class="success-container">
-    <div class="success-card">
-      <h1>🎉 Success!</h1>
-      <p>Your payment has been processed successfully.</p>
-      <p v-if="loading">Processing your order...</p>
+  <div class="failure-container">
+    <div class="failure-card">
+      <h1>❌ Payment Failed</h1>
+      <p>Unfortunately, your payment could not be processed.</p>
+      <p v-if="loading">Retrying payment...</p>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-      <router-link v-if="!loading" to="/dashboard" class="home-button">Go Dashboard</router-link>
+      <router-link v-if="!loading" to="/dashboard" class="retry-button">Try Again</router-link>
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "SuccessView",
+  name: "FailureView",
   data() {
     return {
       loading: true,
@@ -22,61 +22,59 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getCartItems", "getUserId","getUserName"]),
+    ...mapGetters(["getCartItems", "getUserId", "getUserName"]),
   },
   methods: {
-    ...mapActions(["paymentDetails", "placeOrder"]),
-    async completePaymentAndOrder() {
+    ...mapActions(["paymentDetails"]),
+    async handleFailedPayment() {
       if (this.getCartItems.length === 0) {
         this.errorMessage = "No items in cart. Redirecting...";
-        setTimeout(() => this.$router.push("/"), 3000);
+        setTimeout(() => this.$router.push("/dashboard"), 3000);
         return;
       }
 
       try {
         const paymentData = {
           userId: this.getUserId,
-          name: this.getUserName, 
-          amount: this.getCartItems.reduce((sum, item) => sum + item.price * item.cartQuantity *10, 0),
-          paymentstring: "success",
+          name: this.getUserName,
+          amount: this.getCartItems.reduce((sum, item) => sum + item.price * item.cartQuantity * 10, 0),
+          paymentstring: "failure",
         };
-        await this.placeOrder();
 
         await this.paymentDetails(paymentData);
-        
-
       } catch (error) {
-        this.errorMessage = "Failed to complete payment or order. Try again.";
+        this.errorMessage = "Failed to process failure status. Try again.";
       } finally {
         this.loading = false;
       }
     },
   },
   mounted() {
-    this.completePaymentAndOrder(); // ✅ Call when page loads
+    this.handleFailedPayment(); 
   },
 };
 </script>
 
 <style scoped>
-.success-container {
+.failure-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f3f4f6;
+  background-color: #f8d7da;
 }
 
-.success-card {
+.failure-card {
   background: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  border: 2px solid #dc3545;
 }
 
 h1 {
-  color: #22c55e;
+  color: #dc3545;
 }
 
 p {
@@ -89,17 +87,17 @@ p {
   font-weight: bold;
 }
 
-.home-button {
+.retry-button {
   display: inline-block;
   margin-top: 15px;
   padding: 10px 15px;
-  background-color: #22c55e;
+  background-color: #dc3545;
   color: white;
   text-decoration: none;
   border-radius: 5px;
 }
 
-.home-button:hover {
-  background-color: #16a34a;
+.retry-button:hover {
+  background-color: #c82333;
 }
 </style>
