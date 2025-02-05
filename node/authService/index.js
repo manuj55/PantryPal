@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const publicKeyRoute = require("./routes/auth/publicKeyRoute");
 const loginRoute = require("./routes/auth/loginRoute");
-const { correlationIdMiddleware } = require("../correlationId");
+const { correlationIdMiddleware } = require("./correlationId");
 
 dotenv.config();
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
-const { authServiceLogger: logger } = require("../../../logging");
+const { authServiceLogger: logger } = require("../../logging");
 const { generateJWTWithPrivateKey, fetchUsers } = require("./util");
 const { ROLES } = require("../../consts");
 
