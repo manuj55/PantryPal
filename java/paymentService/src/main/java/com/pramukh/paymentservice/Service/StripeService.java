@@ -8,10 +8,12 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
+@Slf4j
 @Service
 public class StripeService {
 
@@ -21,6 +23,8 @@ public class StripeService {
 
     // Method to make payment in Stripe
     public PaymentResponseDto makepayment(PaymentRequestDto paymentRequestDto) throws StripeException {
+
+        log.info("Making payment");
         Stripe.apiKey = secretKey;
 
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData.builder()
