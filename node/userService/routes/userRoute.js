@@ -2,7 +2,7 @@ const express = require("express");
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
-const { userServiceLogger: logger } = require("../../../logging");
+const { userServiceLogger: logger } = require("../../logging");
 const User = require("../models/user")
 const VerificationToken = require('../models/VerificationToken');
 

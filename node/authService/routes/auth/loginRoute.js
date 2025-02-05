@@ -14,10 +14,6 @@ router.post("/user", async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        if (!isVerified) {
-            logger.warn("User not verified");
-            return res.status(400).json({ message: "User not verified" });
-        }
         if (!email || !password) {
             logger.warn("Email or password missing in request body");
             return res
@@ -32,6 +28,10 @@ router.post("/user", async (req, res) => {
         if (!user) {
             logger.warn(`User not found for email: ${email}`);
             return res.status(404).json({ message: "user not found" });
+        }
+        if (!user.isVerified) {
+            logger.warn("User not verified");
+            return res.status(400).json({ message: "User not verified" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
