@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class SecurityConfig {
     @Bean
     public FilterRegistrationBean<JWTAuthFilter> jwtAuthFilter() {
-        System.out.println("Filter");
+
         FilterRegistrationBean<JWTAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new JWTAuthFilter());
         registrationBean.addUrlPatterns("/api/*");

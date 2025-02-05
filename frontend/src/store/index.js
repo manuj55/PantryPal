@@ -6,7 +6,10 @@ export default createStore({
   state: {
     userId: localStorage.getItem("userId") || null,
     name: localStorage.getItem("name"),
+  
+    id:[],
     products: [],
+    products_admin: [],
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
     itemsInCart: JSON.parse(localStorage.getItem("cartItems")) || [],
@@ -28,6 +31,18 @@ export default createStore({
         image: `data:image/png;base64,${product.image}`,  
       }));
       state.filteredProducts = state.products;
+    },
+    SET_PRODUCTS_admin(state, products) {
+      state.products_admin = products.map((product) => ({
+        id: product.id,
+        title: product.name,
+        description: product.description,
+        price: product.price,
+        quantity: product.quantity,
+        category: product.category,
+        image: `data:image/png;base64,${product.image}`,  
+      }));
+      state.filteredProducts = state.products_admin;
     },
     SET_FILTERED_PRODUCTS(state, products) {
       state.filteredProducts = products;
@@ -109,7 +124,6 @@ export default createStore({
       SET_PAYMENT_STATUS(state, status) {
         state.paymentStatus = status;
       },
-
   },
 
   actions: {
@@ -126,6 +140,19 @@ export default createStore({
         console.error("Error fetching products:", error);
       }
     },
+    async fetchAllProducts_admin({ commit }) {
+      try {
+        const response = await axios.get("http://localhost:5004/api/products", {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // Retrieve stored token
+          }
+        });
+        console.log("API Response:", response.data); 
+        commit("SET_PRODUCTS_admin", response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    },
     async fetchProductsByCategory({ commit }, category) {
       try {
         const token = localStorage.getItem("authToken"); // Retrieve token from local storage
@@ -137,6 +164,43 @@ export default createStore({
         commit("SET_PRODUCTS", response.data);
       } catch (error) {
         console.error("Error fetching products by category:", error);
+      }
+    },
+    async fetchProductsByCategory_admin({ commit }, category) {
+      try {
+        const response = await axios.get(`http://localhost:5004/api/products/category/${category}`, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // Retrieve stored token
+          }
+        });
+        commit("SET_PRODUCTS", response.data);
+      } catch (error) {
+        console.error("Error fetching products by category:", error);
+      }
+    },
+
+    async addProduct({ commit }, productData) {
+      try {
+        const formData = new FormData();
+        formData.append("name", productData.name);
+        formData.append("description", productData.description);
+        formData.append("price", productData.price);
+        formData.append("quantity", productData.quantity);
+        formData.append("category", productData.category);
+        formData.append("image", productData.image); // Image file
+    
+        const response = await axios.post("http://localhost:5004/api/products", formData, {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+    
+        if (response.status === 201) {
+          commit("ADD_PRODUCT", response.data); // Update state
+        }
+      } catch (error) {
+        console.error("Error adding product:", error.response?.data || error.message);
       }
     },
     addToCart({ commit }, product) {
@@ -155,9 +219,13 @@ export default createStore({
     setUserId({ commit }, userId) {
       commit('SET_USER_ID', userId);
     },
-    setUserName({ commit }, name) {
-      commit('SET_NAME', name);
+    setEmail({ commit }, email) {
+      commit('SET_USER_Email', email);
     },
+    setUserName({ commit }, name) {
+      commit('SET_UserName', name);
+    },
+
     async placeOrder({ commit, state }) {
       if (state.itemsInCart.length === 0) {
         alert("Your cart is empty!");
@@ -199,8 +267,10 @@ export default createStore({
     async fetchOrders({ commit, state }) {
       try {
         const token = localStorage.getItem("authToken");  
-        if (!token || !state.userId) {
-          console.error("Authentication token or userId is missing.");
+
+        if (!token ) {
+          console.error("No auth token found.");
+
           return;
         }
     
@@ -328,6 +398,7 @@ export default createStore({
     getUserName: (state) => state.name,
     getCartTotal: (state) =>
       state.itemsInCart.reduce((total, item) => total + item.price * item.cartQuantity, 0),
+    getEmail: (state) => state.email,
     getOrders: (state) => state.orders,
     isLoading: (state) => state.loading,
     isOrderSuccess: (state) => state.orderSuccess,

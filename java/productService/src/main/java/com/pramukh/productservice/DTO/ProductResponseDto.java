@@ -3,6 +3,7 @@ package com.pramukh.productservice.DTO;
 import lombok.Builder;
 import lombok.Data;
 
+// DTO for Product Response
 @Data
 @Builder
 public class ProductResponseDto {

@@ -6,6 +6,7 @@ const cors = require("cors");
 const connectDB = require("./config/db.js")
 const userRoute = require("./routes/userRoute")
 const verifyRoute = require("./routes/verifyRoute.js")
+const { correlationIdMiddleware } = require("./correlationId.js");
 const swaggerDocs = require('./swagger.js')
 
 
@@ -18,6 +19,7 @@ const app = express();
 
 //middleware
 app.use(cors());
+app.use(correlationIdMiddleware);
 //parse incoming request to json
 app.use(express.json());
 

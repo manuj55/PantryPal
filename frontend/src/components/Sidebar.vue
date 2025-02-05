@@ -38,8 +38,16 @@
           <span v-if="!isCollapsed">Profile</span>
         </router-link>
       </li>
+      <li>
+        <router-link to="/signin" class="nav-item" active-class="active" @click="logout">
+          <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+          <span v-if="!isCollapsed">Logout</span>
+        </router-link>
+      </li>
       </ul>
-    </div>
+     
+  </div>  
+   
   </template>
   
   <script>
@@ -54,7 +62,20 @@
       toggleSidebar() {
         this.isCollapsed = !this.isCollapsed;
       },
+      logout() {
+      // Clear authentication details
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("name");
+      // Clear Vuex store
+      this.$store.dispatch('logout');
+
+      // Redirect to SignIn page
+      this.$router.push("/signin");
     },
+  },
+  
   };
   </script>
   
@@ -125,6 +146,9 @@
     font-size: 20px;
   }
   
+.logout-btn:hover {
+  background: #c82333;
+}
  
   @media (max-width: 1024px) {
     .sidebar {
