@@ -6,6 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.KeyFactory;
@@ -13,6 +14,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+@Slf4j
 public class JWTvalidator {
 
     public static DecodedJWT validate(String token) throws Exception {
@@ -42,6 +44,7 @@ public class JWTvalidator {
             return jwt;
 
         } catch (Exception e) {
+            log.error("Error validating JWT");
             throw new RuntimeException("Jwt Validation Error " + e.getMessage());
         }
     }
@@ -57,9 +60,11 @@ public class JWTvalidator {
                     KeyFactory keyfactory = KeyFactory.getInstance("RSA");
                     RSAPublicKey publicKey = (RSAPublicKey) keyfactory.generatePublic(keySpec);
                     System.out.println(publicKey);
+                    log.info("Public key generated successfully");
                     return publicKey;
 
                 } catch (Exception ex) {
+                    log.error("Failed to generate RSAPublicKey");
                     throw new Exception("Failed to generate RSAPublicKey", ex);
                 }
             }
