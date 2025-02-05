@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// DTO for Stripe Payment Response
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

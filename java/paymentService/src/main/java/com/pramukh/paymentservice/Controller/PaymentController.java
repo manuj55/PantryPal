@@ -27,6 +27,7 @@ public class PaymentController {
     @Autowired
     private PaymentDetailsService paymentDetailsService;
 
+    // Creating Stripe  payment
     @PostMapping("/payment")
     @RateLimiter(name = "paymentRateLimiter")
     @Operation(summary = "Make payment")
@@ -36,6 +37,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentResponseDto);
     }
 
+    // Add payment details to DB
     @PostMapping("/paymentDetails")
     @RateLimiter(name = "paymentRateLimiter")
     @Operation(summary = "Add payment details")

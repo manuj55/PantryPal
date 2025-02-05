@@ -18,6 +18,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter");
+        // Allow swagger to be accessed without token
         String requestURI = request.getRequestURI();
         if (requestURI.startsWith("/swagger-ui")) {
             chain.doFilter(request, response);
@@ -30,17 +31,18 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("JWTAuthFilter invoked");
+        // Check if the request has a header in the  token
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing");
             return;
         }
-        System.out.println("Header present");
+
         String token = header.substring(7);
         try {
+            // Validate the token using the JWTValidator class
             DecodedJWT jwt = JWTvalidator.validate(token);
-            System.out.println(jwt);
+            // Check if the user has the required roles to access the endpoint
             List<String> endpointRoles = getRoles(request);
             System.out.println(endpointRoles + "endpointRoles");
             if (!endpointRoles.isEmpty()) {
@@ -60,7 +62,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
 
     }
-
+    // Check if the user has the required roles to access the endpoint
     private boolean userHasRequiredRole(List<String> requiredRoles, String[] userRoles) {
         for (String role : userRoles) {
             if (requiredRoles.contains(role)) {
@@ -69,7 +71,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         }
         return false;
     }
-
+    // Get the roles required to access the endpoint
     private List<String> getRoles(HttpServletRequest request) {
         String endpoint = request.getRequestURI();
         System.out.println(endpoint);

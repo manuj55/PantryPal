@@ -24,6 +24,7 @@ public class ProductService {
     @Autowired
     private ProductRespository productRespository;
 
+    // Add products
     public String addProducts(List<ProductRequestDto> productRequestDto, List<MultipartFile> files) throws IOException {
 
         if (productRequestDto.size() != files.size()) {
@@ -38,7 +39,7 @@ public class ProductService {
         return "Products added successfully";
     }
 
-
+    // Get all products
     public List<ProductResponseDto> getProducts() {
         List<ProductResponseDto> products = new ArrayList<>();
         List<ProductEntity> productEntities = productRespository.findAll();
@@ -51,6 +52,7 @@ public class ProductService {
         return products;
     }
 
+    // Get products by category
     public List<ProductResponseDto> getProductsByCategory(String category) {
         List<ProductResponseDto> products = new ArrayList<>();
         List<ProductEntity> productList = productRespository.findByCategory(category);
@@ -63,6 +65,7 @@ public class ProductService {
         return products;
     }
 
+    // Get products by name
     public List<ProductResponseDto> getProductsByName(String name) {
         List<ProductResponseDto> products = new ArrayList<>();
         List<ProductEntity> productList = productRespository.searchByName(name);
@@ -75,8 +78,8 @@ public class ProductService {
         return products;
     }
 
+    // Delete product by id
     public String deleteProduct(String id) {
-        System.out.println("Entered delete product service");
         Optional<ProductEntity> result = productRespository.findById(id);
         if (result.isEmpty()) {
             throw new ProductNotFoundException("Product not found");
@@ -85,7 +88,7 @@ public class ProductService {
         return "Product deleted successfully";
     }
 
-
+    // Update product by id
     public String updateProduct(String id, UpdateProductDTO updateProductDTO) {
         Optional<ProductEntity> result = productRespository.findById(id);
         if (result.isEmpty()) {

@@ -19,6 +19,7 @@ public class StripeService {
     private  String secretKey;
 
 
+    // Method to make payment in Stripe
     public PaymentResponseDto makepayment(PaymentRequestDto paymentRequestDto) throws StripeException {
         Stripe.apiKey = secretKey;
 
