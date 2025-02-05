@@ -13,7 +13,7 @@ export default createStore({
     filteredProducts: [],
     categories: ["Dairy", "Fruits", "Vegetables", "Non-Veg"],
     itemsInCart: JSON.parse(localStorage.getItem("cartItems")) || [],
-    
+    paymentStatus:[],
     orders: [],
     orderSuccess: false,
     loading: false,
@@ -119,8 +119,11 @@ export default createStore({
       DELETE_PRODUCT(state, productId) {
         state.products_admin = state.products_admin.filter(product => product.id !== productId);
         state.filteredProducts = state.filteredProducts.filter(product => product.id !== productId);
-      }
+      },
 
+      SET_PAYMENT_STATUS(state, status) {
+        state.paymentStatus = status;
+      },
   },
 
   actions: {
@@ -319,7 +322,7 @@ export default createStore({
 
     async paymentDetails({ commit }, { userId, name, amount,paymentstring}) {
       commit("SET_PAYMENT_STATUS", "processing");
-      commit("SET_PAYMENT_ERROR", null);
+      //commit("SET_PAYMENT_ERROR", null);
       const paymentData = {
         userId: userId,
         name: name,
@@ -342,15 +345,15 @@ export default createStore({
         console.log("Payment Successful:", response.data);
 
         commit("SET_PAYMENT_STATUS", "success");
-        commit("SET_PAYMENT_RESPONSE", response.data);
+        //commit("SET_PAYMENT_RESPONSE", response.data);
 
         // Redirect to success page
         this.$router.push("/success");
 
       } catch (error) {
-        console.error("Payment Error:", error.response?.data || error.message);
+        //console.error("Payment Error:", error.response?.data || error.message);
         commit("SET_PAYMENT_STATUS", "failed");
-        commit("SET_PAYMENT_ERROR", error.response?.data || error.message);
+        //commit("SET_PAYMENT_ERROR", error.response?.data || error.message);
       }
     },
     

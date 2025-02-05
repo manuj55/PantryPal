@@ -1,4 +1,12 @@
 services:
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
   authservice:
     build: ./node/authService
     ports:
@@ -15,12 +23,21 @@ services:
     networks:
       - app-network
 
+  orderservice:
+    build: ./python  
+    ports:
+      - "5003:5003"
+    depends_on:
+      - productservice
+    networks:
+      - app-network
+
   productservice:
     build: ./java/productService
     ports:
       - "5004:5004"
     depends_on:
-      - authservice
+      - userservice
     networks:
       - app-network
 
@@ -29,9 +46,10 @@ services:
     ports:
       - "5005:5005"
     depends_on:
-      - authservice
+      - orderservice
     networks:
       - app-network
 
 networks:
   app-network:
+

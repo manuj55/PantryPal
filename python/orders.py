@@ -134,7 +134,7 @@ async def process_payment(
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "http://localhost:5005/api/payment",
+                "http://paymentservice:5005/api/payment",
                 headers={"Authorization": f"Bearer {new_generated_token}"},
                 json=payment_payload
             )
@@ -172,7 +172,7 @@ async def process_payment(
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "http://localhost:5005/api/paymentDetails",  
+                "http://paymentservice:5005/api/paymentDetails",  
                 headers={"Authorization": f"Bearer {new_generated_token}"},
                 json=payment_payload
             )
@@ -191,7 +191,7 @@ async def process_payment(
  
  
  
-    
+  
 @app.get("/public-key/", response_model=dict)
 async def get_public_key():
     """ Serve the public key in JWK format (Replicating Node.js behavior) """

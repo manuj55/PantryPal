@@ -13,7 +13,7 @@ JWT_HEADER = {
     "alg": "RS256",
     "typ": "JWT",
     "kid": "1",
-    "jku": "http://localhost:5003/public-key/"  # Public Key Endpoint
+    "jku": "http://orderservice:5003/public-key/"  # Public Key Endpoint
 }
 
 def generate_jwt(user_id: str):
