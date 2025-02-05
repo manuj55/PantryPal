@@ -6,12 +6,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-
+@Slf4j
 @Component
 public class JWTAuthFilter extends OncePerRequestFilter {
 
@@ -34,6 +35,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         // Check if the request has a header in the  token
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer")) {
+            log.error("Authorization header is missing");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing");
             return;
         }
@@ -45,10 +47,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             // Check if the user has the required roles to access the endpoint
             List<String> endpointRoles = getRoles(request);
             System.out.println(endpointRoles + "endpointRoles");
+            log.info("checking roles");
             if (!endpointRoles.isEmpty()) {
                 String[] userRoles = jwt.getClaim("roles").asArray(String.class);
                 System.out.println("userroles" + userRoles);
                 if (!userHasRequiredRole(endpointRoles, userRoles)) {
+                    log.error("You are not authorized to access this endpoint");
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "You are not authorized to access this endpoint");
                     return;
                 }
@@ -57,7 +61,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             System.out.println("Filter completed execution.");
 
         } catch (Exception e) {
-            System.out.println("Error in filter");
+            log.error("Invalid token");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token: " + e.getMessage());
         }
 
