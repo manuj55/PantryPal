@@ -7,6 +7,7 @@ import com.pramukh.productservice.Service.ProductService;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}, allowedHeaders = {"Authorization", "Content-Type", "Accept"})
 @RestController
 @RequestMapping("/api")
@@ -31,6 +33,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<String> getProducts(@RequestPart("product") List<ProductRequestDto> productRequestDto, @RequestPart("image") List<MultipartFile> file) throws IOException {
         productService.addProducts(productRequestDto, file);
+        log.info("Products added successfully");
         return new ResponseEntity<>("Product added successfully", HttpStatus.OK);
     }
 
@@ -40,6 +43,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<List<ProductResponseDto>> getProducts() {
         List<ProductResponseDto> products = productService.getProducts();
+        log.info("All Products fetched successfully");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -49,6 +53,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<List<ProductResponseDto>> getProductsByCategory(@PathVariable String category) {
         List<ProductResponseDto> products = productService.getProductsByCategory(category);
+        log.info("Products fetched by category successfully");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -58,6 +63,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<List<ProductResponseDto>> getProductsByName(@PathVariable String name) {
         List<ProductResponseDto> products = productService.getProductsByName(name);
+        log.info("Products fetched by name successfully");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -67,6 +73,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<String> deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
+        log.info("Product deleted successfully");
         return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
     }
 
@@ -76,6 +83,7 @@ public class ProductController {
     @RateLimiter(name = "productRateLimiter")
     public ResponseEntity<String> updateProduct(@PathVariable String id, @RequestBody UpdateProductDTO updateProductDTO) {
         productService.updateProduct(id, updateProductDTO);
+        log.info("Product updated successfully");
         return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
     }
 
