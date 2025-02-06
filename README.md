@@ -68,7 +68,7 @@ Once downloaded, place the `.env` files in the root directory of the project (or
 
 # Roles and responsibilities of team members
 
-# Manu Janardhana
+# 1. Manu Janardhana
 
 ## Service Development (Node.js, REST APIs)
 - The Auth Service (for authorization) and User Service (for user data) were developed following the MVC pattern, with REST APIs for each.
@@ -106,8 +106,7 @@ Both **AuthServices** and **UserServices** are containerized to ensure easy depl
 - **Containerization**: Docker
 
 ---
-
-# Pramukh Prakash
+# 2. Pramukh Prakash
 
 ##  ProductService
 Provides CRUD operations for managing products, along with enhanced security and performance measures.
@@ -153,17 +152,18 @@ Both **ProductService** and **PaymentService** are containerized to ensure easy 
 - **Containerization**: Docker
 
 ---
-# Yathish Sadashivareddy
-
-- **1. Vue.js Frontend Development**:
+# 3. Yathish Sadashivareddy
+ 
+## Vue.js Frontend Development:
   - **Project Setup**: Configured Vue.js with Vue Router for navigation, Vuex for state management, and applied consistent UI styling.
   - **Key Components Developed**:
     - **Dashboard**: Displays available products, supports search by title, category filtering, and adding items to the cart.
     - **Cart**: Allows users to modify product quantities, proceed to checkout, and seamlessly integrates with Stripe for secure payments.
     - **Orders Page**: Displays past orders, fetching order history from the backend.
-
-- **2. Orders Microservice Development**:
+ 
+## Orders Microservice Development:
   - **Secure Order Management**:
+    - Endpoints (GET, POST) were provided to manage order services.
     - Implements JWT-based authentication to ensure that only authorized users can place and view orders.
     - Validates user_id before creating or retrieving orders.
   - **Integration with External Services**:
@@ -175,20 +175,21 @@ Both **ProductService** and **PaymentService** are containerized to ensure easy 
   - **Authentication & Scalability**:
     - Provides a public key endpoint in JWK format to facilitate authentication between services.
     - Uses Docker for containerization, ensuring scalability and easy deployment.
-
-- **3. Security & Authentication**:
+ 
+## Security & Authentication:
   - Implements JWT-based authentication for secure API access.
   - Generates and validates self-signed JWT tokens to ensure request authenticity.
   - Protects endpoints by decrypting and verifying tokens before processing requests.
-
-- **Technologies Used**:
+ 
+ 
+## Technologies Used:
   - **Frontend**: Vue.js, Vuex, Vue Router
   - **Backend**: FastAPI, MongoDB, JWT Authentication
   - **Database**: MongoDB
   - **Containerization**: Docker
 
 ---
-# Manoj Padmanabha
+# 4. Manoj Padmanabha
 
 ## **Developed Pages**
 - **Sign In Page:** For user authentication.
