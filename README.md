@@ -1,8 +1,5 @@
 # Here’s the section for the README file with instructions on how to use the .env files from Google Drive:
 
-markdown
-Copy
-Edit
 ## Environment Setup
 
 To run this project, you need to configure the environment variables using the provided `.env` files. Follow the instructions below to download and set them up.
