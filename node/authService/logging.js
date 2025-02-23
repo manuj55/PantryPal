@@ -1,7 +1,10 @@
 const { createLogger, format, transports } = require("winston");
+const dontenv = require('dotenv');
 const { ElasticsearchTransport } = require("winston-elasticsearch");
 const { getCorrelationId } = require("./correlationId"); // Function to retrieve the correlation ID
 
+
+dontenv.config();
 // Define custom log levels
 const customLevels = {
   levels: {
@@ -17,10 +20,10 @@ const esTransport = (appName) => {
   let transporter = {
     level: "info", // Minimum log level to send to Elasticsearch
     clientOpts: {
-      node: "https://5fea004e637a4c7bad4571efb4bc0aa0.us-central1.gcp.cloud.es.io:9243",
+      node: process.env.ELASTICSEARCH_URL,
       auth: {
         username: "elastic",
-        password: "54J3tgBoYvXeeIYthNE7Uppe",
+        password: process.env.ELASTICSEARCH_PASSWORD,
       },
     },
     indexPrefix: "sms-logs", // Logs will be stored in indices like "nodejs-logs-YYYY.MM.DD"
