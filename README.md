@@ -45,11 +45,3 @@ To see the commits for the Node.js services, check the `node` folder [here](http
 
 ---
 
-## 🐳 Docker Integration  
-Both **Auth Service** and **User Service** are containerized for easy deployment:  
-The following are the Docker images of node application:
-
-| Service         | Docker Image                                |
-|-----------------|---------------------------------------------|
-| **Auth Service** | manujana/node-authservice:latest         |
-| **User Service** | manujana/node-userservice:latest         |
